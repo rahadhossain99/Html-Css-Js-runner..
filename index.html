@@ -3,46 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AethelIDE Supreme - Premium Light</title>
+    <title>AethelIDE Supreme - Vibrant Light</title>
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600&display=swap" rel="stylesheet">
     
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- CodeMirror Core & Theme -->
+    <!-- CodeMirror Core -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/idea.min.css">
     
     <style>
         :root {
-            /* Premium Light Theme Colors */
-            --bg-body: #f1f5f9;
+            /* Premium Light & Vibrant Colors */
+            --bg-body: #f3f4f6;
             --bg-panel: #ffffff;
-            --bg-header: rgba(255, 255, 255, 0.9);
+            --bg-header: rgba(255, 255, 255, 0.95);
             
-            --text-main: #1e293b;
-            --text-muted: #64748b;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
             
-            --primary-blue: #4f46e5;
-            --primary-hover: #4338ca;
-            --accent-cyan: #0ea5e9;
+            --primary-blue: #3b82f6;
+            --primary-hover: #2563eb;
             --success-green: #10b981;
             --danger-red: #ef4444;
-            --warning-yellow: #f59e0b;
+            --accent-purple: #8b5cf6;
             
-            --border-color: #e2e8f0;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
             
             --font-main: 'Inter', 'Noto Sans Bengali', sans-serif;
             --font-code: 'Fira Code', monospace;
             
             --radius-md: 8px;
             --radius-lg: 12px;
-            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: 0.2s ease-in-out;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -53,23 +50,24 @@
             color: var(--text-main);
             display: flex;
             flex-direction: column;
+            /* Use dvh for perfect mobile sizing */
             height: 100vh;
+            height: 100dvh; 
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
         /* --- Custom Scrollbar --- */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-body); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
         /* --- Header / Navbar --- */
         .app-header {
             background: var(--bg-header);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            padding: 12px 24px;
+            backdrop-filter: blur(8px);
+            padding: 10px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -79,67 +77,60 @@
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: var(--text-main);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             letter-spacing: -0.5px;
         }
-        .logo i { color: var(--primary-blue); font-size: 1.6rem; }
-        .logo span { font-size: 0.7rem; background: var(--primary-blue); color: #fff; padding: 2px 6px; border-radius: 12px; vertical-align: middle; margin-left: 5px; font-weight: 500;}
+        .logo i { color: var(--primary-blue); font-size: 1.4rem; }
 
-        .controls { display: flex; align-items: center; gap: 10px; }
+        .controls { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; }
 
         .input-group { position: relative; }
         .input-group input {
             background: #f8fafc;
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 8px 12px 8px 36px;
+            padding: 8px 10px 8px 32px;
             border-radius: var(--radius-md);
             font-family: var(--font-main);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             outline: none;
             transition: var(--transition);
-            width: 200px;
+            width: 160px;
         }
         .input-group i {
-            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-            color: var(--text-muted); font-size: 0.9rem;
+            position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted); font-size: 0.85rem;
         }
-        .input-group input:focus { 
-            border-color: var(--primary-blue); 
-            background: #fff;
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15); 
-        }
+        .input-group input:focus { border-color: var(--primary-blue); background: #fff; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
 
         /* --- Premium Buttons --- */
         .btn {
-            padding: 8px 16px; border: none; border-radius: var(--radius-md);
-            font-family: var(--font-main); font-size: 0.9rem; font-weight: 500;
-            cursor: pointer; display: flex; align-items: center; gap: 8px;
+            padding: 8px 12px; border: none; border-radius: var(--radius-md);
+            font-family: var(--font-main); font-size: 0.85rem; font-weight: 500;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
             transition: var(--transition);
-            background: #fff;
-            color: var(--text-main);
+            background: #fff; color: var(--text-main);
             border: 1px solid var(--border-color);
             box-shadow: var(--shadow-sm);
         }
-        .btn:hover { background: #f8fafc; transform: translateY(-1px); box-shadow: var(--shadow-md); }
+        .btn:hover { background: #f8fafc; transform: translateY(-1px); }
         .btn:active { transform: translateY(0); }
         
-        .btn-new { color: var(--success-green); border-color: #d1fae5; background: #ecfdf5; }
+        .btn-new { color: var(--success-green); border-color: #a7f3d0; background: #ecfdf5; }
         .btn-new:hover { background: #d1fae5; }
-        
         .btn-save { color: #fff; background: var(--primary-blue); border-color: var(--primary-blue); }
         .btn-save:hover { background: var(--primary-hover); }
-        
-        .btn-history { color: var(--text-main); }
+        .btn-download { color: var(--accent-purple); border-color: #ddd6fe; background: #f5f3ff; }
+        .btn-download:hover { background: #ede9fe; }
 
         /* --- Main Content Area --- */
         .main-wrapper {
-            display: flex; flex-direction: column; flex-grow: 1; padding: 16px; gap: 16px; overflow: hidden;
+            display: flex; flex-direction: column; flex-grow: 1; padding: 10px; overflow: hidden;
         }
 
         .editor-container {
@@ -155,13 +146,12 @@
             display: flex; background: #f8fafc; border-bottom: 1px solid var(--border-color);
         }
         .tab-btn {
-            flex: 1; padding: 14px; background: transparent; border: none;
-            font-family: var(--font-main); font-weight: 600; font-size: 0.95rem; color: var(--text-muted);
-            cursor: pointer; transition: var(--transition); display: flex; justify-content: center; align-items: center; gap: 8px;
+            flex: 1; padding: 12px 8px; background: transparent; border: none;
+            font-family: var(--font-main); font-weight: 600; font-size: 0.9rem; color: var(--text-muted);
+            cursor: pointer; transition: var(--transition); display: flex; justify-content: center; align-items: center; gap: 6px;
             border-bottom: 2px solid transparent;
         }
         .tab-btn:hover { color: var(--primary-blue); background: #f1f5f9; }
-        
         .tab-btn.active { color: var(--primary-blue); border-bottom-color: var(--primary-blue); background: var(--bg-panel); }
         
         .tab-btn[data-target="html"] i { color: #e34c26; }
@@ -169,113 +159,102 @@
         .tab-btn[data-target="js"] i { color: #f0db4f; }
         .tab-btn[data-target="preview"] i { color: var(--success-green); }
 
-        /* --- Tab Content --- */
-        .tab-content { display: none; flex-grow: 1; height: 100%; position: relative; }
-        .tab-content.active { display: flex; flex-direction: column; animation: fadeIn 0.3s ease; }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- CodeMirror Premium Light Theme Adjustments --- */
-        .CodeMirror { height: 100%; width: 100%; font-family: var(--font-code); font-size: 14px; line-height: 1.6; background: #fff; color: #333; }
-        .CodeMirror-gutters { background: #f8fafc; border-right: 1px solid var(--border-color); }
-        .CodeMirror-linenumber { color: #94a3b8; }
-        .CodeMirror-cursor { border-left: 2px solid var(--primary-blue); }
-        
-        /* Floating Editor Actions */
-        .editor-actions {
-            position: absolute; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 10;
+        /* --- Editor Toolbar (Top Actions to prevent hiding) --- */
+        .editor-toolbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 6px 12px; background: #fff; border-bottom: 1px solid #f1f5f9;
         }
+        .file-badge { font-family: var(--font-code); font-size: 0.75rem; color: var(--text-muted); background: #f1f5f9; padding: 3px 8px; border-radius: 4px; }
+        .action-group { display: flex; gap: 8px; }
         .action-btn {
-            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px); border: 1px solid var(--border-color);
-            color: var(--text-muted); padding: 8px 12px; border-radius: var(--radius-md);
-            cursor: pointer; font-size: 0.85rem; box-shadow: var(--shadow-sm); transition: var(--transition);
+            background: transparent; border: 1px solid var(--border-color);
+            color: var(--text-muted); padding: 4px 10px; border-radius: 6px;
+            cursor: pointer; font-size: 0.75rem; font-weight: 500; transition: var(--transition); display: flex; align-items: center; gap: 4px;
         }
-        .action-btn:hover { background: var(--bg-body); color: var(--primary-blue); border-color: var(--primary-blue); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .action-btn:hover { background: #f8fafc; color: var(--primary-blue); border-color: var(--primary-blue); }
         .action-btn.clear-btn:hover { color: var(--danger-red); border-color: var(--danger-red); }
 
+        /* --- Tab Content --- */
+        .tab-content { display: none; flex-grow: 1; flex-direction: column; height: 100%; position: relative; }
+        .tab-content.active { display: flex; animation: fadeIn 0.2s ease; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- CodeMirror Custom Vibrant Light Theme --- */
+        .CodeMirror { height: 100%; width: 100%; font-family: var(--font-code); font-size: 13.5px; line-height: 1.4; background: #fff; color: #1e293b; }
+        .CodeMirror-gutters { background: #f8fafc; border-right: 1px solid var(--border-color); padding-right: 5px; }
+        .CodeMirror-linenumber { color: #cbd5e1; font-size: 12px; }
+        .CodeMirror-cursor { border-left: 2px solid var(--primary-blue); }
+        .CodeMirror-selected { background: #e0f2fe !important; }
+        
+        /* Vibrant Syntax Colors */
+        .cm-s-default .cm-tag { color: #e11d48; font-weight: 500; } /* Pink/Red tags */
+        .cm-s-default .cm-attribute { color: #0284c7; } /* Blue attributes */
+        .cm-s-default .cm-string { color: #16a34a; } /* Green strings */
+        .cm-s-default .cm-keyword { color: #7e22ce; font-weight: 600; } /* Purple keywords */
+        .cm-s-default .cm-def { color: #ea580c; } /* Orange functions/variables */
+        .cm-s-default .cm-comment { color: #94a3b8; font-style: italic; } /* Gray comments */
+        .cm-s-default .cm-number { color: #059669; } /* Dark green numbers */
+        .cm-s-default .cm-property { color: #0f766e; } /* Teal CSS properties */
+        .cm-s-default .cm-qualifier { color: #c026d3; } /* Magenta CSS classes */
+        .cm-s-default .cm-operator { color: #475569; font-weight: bold; }
+
         /* --- Preview Iframe --- */
-        #previewFrame { width: 100%; height: 100%; border: none; background: #fff; }
-        .preview-toolbar { padding: 10px 16px; background: #f8fafc; display: flex; justify-content: flex-end; gap: 10px; border-bottom: 1px solid var(--border-color); }
+        #previewFrame { width: 100%; height: 100%; border: none; background: #fff; flex-grow: 1; }
+        .preview-toolbar { padding: 8px 12px; background: #f8fafc; display: flex; justify-content: flex-end; border-bottom: 1px solid var(--border-color); }
 
         /* --- Footer --- */
         .footer {
-            padding: 10px 24px; display: flex; justify-content: space-between; align-items: center;
-            font-size: 0.8rem; color: var(--text-muted); flex-shrink: 0;
+            padding: 8px 16px; display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.75rem; color: var(--text-muted); flex-shrink: 0;
             background: var(--bg-panel); border-top: 1px solid var(--border-color);
         }
-        .status-badge { display: flex; align-items: center; gap: 6px; background: #f1f5f9; padding: 4px 10px; border-radius: 20px; font-weight: 500; border: 1px solid var(--border-color);}
+        .status-badge { display: flex; align-items: center; gap: 5px; background: #f1f5f9; padding: 3px 8px; border-radius: 20px; font-weight: 500;}
         .status-dot { width: 8px; height: 8px; border-radius: 50%; background-color: var(--success-green); }
 
-        /* --- History Panel (Sidebar) --- */
-        .overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(3px); z-index: 999;
-            display: none; opacity: 0; transition: opacity 0.3s;
-        }
+        /* --- Sidebar & Toast CSS (Same smooth style) --- */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); backdrop-filter: blur(2px); z-index: 999; display: none; opacity: 0; transition: 0.3s; }
         .overlay.active { display: block; opacity: 1; }
-
-        .side-panel {
-            position: fixed; top: 0; right: -360px; width: 100%; max-width: 340px; height: 100%;
-            background: var(--bg-panel); box-shadow: -5px 0 25px rgba(0,0,0,0.1);
-            z-index: 1000; display: flex; flex-direction: column; transition: right 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
+        .side-panel { position: fixed; top: 0; right: -320px; width: 100%; max-width: 300px; height: 100%; background: #fff; box-shadow: -5px 0 20px rgba(0,0,0,0.1); z-index: 1000; display: flex; flex-direction: column; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .side-panel.open { right: 0; }
-        
-        .panel-header {
-            padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;
-            background: #f8fafc;
-        }
-        .panel-header h2 { font-size: 1.2rem; color: var(--text-main); }
-        .close-btn { background: none; border: none; font-size: 1.4rem; color: var(--text-muted); cursor: pointer; transition: 0.2s;}
+        .panel-header { padding: 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
+        .close-btn { background: none; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer; transition: 0.2s;}
         .close-btn:hover { color: var(--danger-red); transform: rotate(90deg); }
-        
-        .history-list { list-style: none; overflow-y: auto; flex-grow: 1; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .history-item {
-            padding: 15px; background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-md);
-            cursor: pointer; transition: var(--transition); position: relative; overflow: hidden; box-shadow: var(--shadow-sm);
-        }
-        .history-item::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; background: var(--primary-blue); transform: scaleY(0); transition: 0.3s; }
-        .history-item:hover { border-color: var(--primary-blue); transform: translateY(-2px); box-shadow: var(--shadow-md); }
-        .history-item:hover::before { transform: scaleY(1); }
-        
-        .h-info h4 { margin-bottom: 5px; color: var(--text-main); font-size: 0.95rem; font-weight: 600;}
-        .h-info p { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
-        .h-delete { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--danger-red); background: #fee2e2; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; opacity: 0; transition: var(--transition); display: flex; justify-content: center; align-items: center;}
+        .history-list { list-style: none; overflow-y: auto; flex-grow: 1; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+        .history-item { padding: 12px; background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: 0.2s; position: relative; }
+        .history-item:hover { border-color: var(--primary-blue); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+        .h-info h4 { margin-bottom: 4px; color: var(--text-main); font-size: 0.9rem; font-weight: 600;}
+        .h-info p { font-size: 0.7rem; color: var(--text-muted); }
+        .h-delete { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--danger-red); background: #fee2e2; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; opacity: 0; transition: 0.2s; display: flex; justify-content: center; align-items: center;}
         .history-item:hover .h-delete { opacity: 1; }
-        .h-delete:hover { background: var(--danger-red); color: white; }
-
-        /* --- Stylish Toast Notification --- */
-        #toast-container { position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none;}
-        .toast {
-            background: #1e293b; color: white; padding: 12px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: 500;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 10px; 
-            opacity: 0; transform: translateY(20px); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
+        
+        #toast-container { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none;}
+        .toast { background: #1e293b; color: white; padding: 10px 20px; border-radius: 30px; font-size: 0.85rem; font-weight: 500; box-shadow: 0 10px 20px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; opacity: 0; transform: translateY(20px); transition: all 0.3s ease; }
         .toast.show { opacity: 1; transform: translateY(0); }
-        .toast i { font-size: 1.2rem; }
         .toast.success i { color: var(--success-green); }
         .toast.error i { color: var(--danger-red); }
 
         /* --- Desktop vs Mobile Responsiveness --- */
         @media (max-width: 768px) {
-            .app-header { flex-wrap: wrap; gap: 12px; padding: 12px 16px; }
-            .logo { width: 100%; justify-content: center; font-size: 1.3rem; }
+            .app-header { flex-wrap: wrap; padding: 10px; gap: 8px; }
+            .logo { width: 100%; justify-content: center; font-size: 1.2rem; }
+            .controls { width: 100%; justify-content: space-between; overflow-x: auto; padding-bottom: 2px; }
+            .input-group input { width: 120px; font-size: 0.8rem; padding: 6px 8px 6px 28px; }
+            .input-group i { left: 10px; font-size: 0.8rem; }
             
-            /* The real magic for mobile buttons */
-            .controls { width: 100%; justify-content: space-between; gap: 8px; }
-            .input-group input { width: 140px; font-size: 0.85rem; padding: 8px 10px 8px 30px; }
-            
-            /* Hide text on mobile, show only icons perfectly centered */
-            .btn span { display: none; } 
-            .btn { padding: 10px 12px; justify-content: center; } 
+            /* Hide Text, Show only icons in header buttons to save space */
+            .btn span { display: none; }
+            .btn { padding: 8px 12px; }
             .btn i { margin: 0; font-size: 1.1rem; }
             
-            .main-wrapper { padding: 8px; gap: 8px; }
-            .tab-btn { font-size: 0.85rem; padding: 12px 5px; }
+            .tab-btn { font-size: 0.8rem; padding: 10px 4px; }
             .tab-btn span { display: none; }
             .tab-btn i { font-size: 1.2rem; margin: 0; }
-            .action-btn { padding: 8px 12px; font-size: 0.8rem; }
-            .action-btn span { display: none; } /* Also hide text on inner buttons */
+            
+            /* Action toolbar */
+            .editor-toolbar { padding: 4px 8px; }
+            .action-btn { padding: 4px 8px; font-size: 0.7rem; }
+            .action-btn span { display: none; }
         }
     </style>
 </head>
@@ -284,21 +263,21 @@
     <!-- Header -->
     <header class="app-header">
         <div class="logo">
-            <i class="fas fa-layer-group"></i> AethelIDE <span>Light</span>
+            <i class="fas fa-layer-group"></i> AethelIDE 
         </div>
         <div class="controls">
             <div class="input-group">
                 <i class="fas fa-pen"></i>
                 <input type="text" id="projectName" placeholder="প্রজেক্টের নাম...">
             </div>
-            <!-- On Desktop: Icon + Text | On Mobile: Only Icon -->
-            <button class="btn btn-new" id="newBtn" title="নতুন প্রজেক্ট তৈরি করুন"><i class="fas fa-plus"></i> <span>নতুন</span></button>
-            <button class="btn btn-save" id="saveBtn" title="কোড সেভ করুন"><i class="fas fa-save"></i> <span>সেভ</span></button>
-            <button class="btn btn-history" id="historyBtn" title="সেভ করা প্রজেক্টগুলো দেখুন"><i class="fas fa-folder-open"></i> <span>ফাইলস</span></button>
+            <button class="btn btn-new" id="newBtn" title="নতুন প্রজেক্ট"><i class="fas fa-plus"></i> <span>নতুন</span></button>
+            <button class="btn btn-save" id="saveBtn" title="কোড সেভ"><i class="fas fa-save"></i> <span>সেভ</span></button>
+            <button class="btn btn-download" id="downloadBtn" title="জিপ ডাউনলোড"><i class="fas fa-file-archive"></i> <span>ডাউনলোড</span></button>
+            <button class="btn btn-history" id="historyBtn" title="ফাইলস"><i class="fas fa-folder-open"></i> <span>ফাইলস</span></button>
         </div>
     </header>
 
-    <!-- Main Content Layout -->
+    <!-- Main Content -->
     <main class="main-wrapper">
         <div class="editor-container">
             <!-- Tabs -->
@@ -309,108 +288,103 @@
                 <button class="tab-btn" data-target="preview" id="previewTabBtn"><i class="fas fa-play"></i> <span>প্রিভিউ</span></button>
             </div>
 
-            <!-- HTML Editor -->
+            <!-- HTML Section -->
             <div class="tab-content active" id="html-content">
+                <div class="editor-toolbar">
+                    <span class="file-badge">index.html</span>
+                    <div class="action-group">
+                        <button class="action-btn copy-btn" data-type="html"><i class="far fa-copy"></i> <span>কপি</span></button>
+                        <button class="action-btn clear-btn" data-type="html"><i class="fas fa-eraser"></i> <span>মুছুন</span></button>
+                    </div>
+                </div>
                 <textarea id="htmlEditor"></textarea>
-                <div class="editor-actions">
-                    <button class="action-btn copy-btn" data-type="html" title="কপি করুন"><i class="far fa-copy"></i> <span>কপি</span></button>
-                    <button class="action-btn clear-btn" data-type="html" title="মুছে ফেলুন"><i class="fas fa-eraser"></i> <span>মুছুন</span></button>
-                </div>
             </div>
             
-            <!-- CSS Editor -->
+            <!-- CSS Section -->
             <div class="tab-content" id="css-content">
-                <textarea id="cssEditor"></textarea>
-                <div class="editor-actions">
-                    <button class="action-btn copy-btn" data-type="css" title="কপি করুন"><i class="far fa-copy"></i> <span>কপি</span></button>
-                    <button class="action-btn clear-btn" data-type="css" title="মুছে ফেলুন"><i class="fas fa-eraser"></i> <span>মুছুন</span></button>
+                <div class="editor-toolbar">
+                    <span class="file-badge">style.css</span>
+                    <div class="action-group">
+                        <button class="action-btn copy-btn" data-type="css"><i class="far fa-copy"></i> <span>কপি</span></button>
+                        <button class="action-btn clear-btn" data-type="css"><i class="fas fa-eraser"></i> <span>মুছুন</span></button>
+                    </div>
                 </div>
+                <textarea id="cssEditor"></textarea>
             </div>
             
-            <!-- JS Editor -->
+            <!-- JS Section -->
             <div class="tab-content" id="js-content">
-                <textarea id="jsEditor"></textarea>
-                <div class="editor-actions">
-                    <button class="action-btn copy-btn" data-type="js" title="কপি করুন"><i class="far fa-copy"></i> <span>কপি</span></button>
-                    <button class="action-btn clear-btn" data-type="js" title="মুছে ফেলুন"><i class="fas fa-eraser"></i> <span>মুছুন</span></button>
+                <div class="editor-toolbar">
+                    <span class="file-badge">script.js</span>
+                    <div class="action-group">
+                        <button class="action-btn copy-btn" data-type="js"><i class="far fa-copy"></i> <span>কপি</span></button>
+                        <button class="action-btn clear-btn" data-type="js"><i class="fas fa-eraser"></i> <span>মুছুন</span></button>
+                    </div>
                 </div>
+                <textarea id="jsEditor"></textarea>
             </div>
 
-            <!-- Live Preview output window -->
+            <!-- Preview Section -->
             <div class="tab-content" id="preview-content">
                 <div class="preview-toolbar">
-                     <button class="btn" id="refreshPreviewBtn" style="padding: 6px 12px; font-size: 0.8rem;"><i class="fas fa-sync-alt"></i> <span>রিলোড</span></button>
+                     <button class="btn" id="refreshPreviewBtn" style="padding: 4px 10px; font-size: 0.8rem;"><i class="fas fa-sync-alt"></i> <span>রিলোড</span></button>
                 </div>
-                <iframe id="previewFrame" sandbox="allow-scripts allow-modals"></iframe>
+                <iframe id="previewFrame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
             </div>
         </div>
     </main>
 
-    <!-- Footer Status -->
+    <!-- Footer -->
     <footer class="footer">
-        <div>&copy; AethelIDE Supreme Light</div>
+        <div>AethelIDE Vibrant</div>
         <div class="status-badge" id="saveStatus">
-            <div class="status-dot"></div> <span id="statusText">অটো-সেভ চালু</span>
+            <div class="status-dot"></div> <span id="statusText">অটো-সেভড</span>
         </div>
     </footer>
 
-    <!-- History Panel / Sidebar -->
+    <!-- History Panel -->
     <div class="overlay" id="overlay"></div>
     <aside class="side-panel" id="historyPanel">
         <div class="panel-header">
-            <h2><i class="fas fa-archive"></i> সেভ করা প্রজেক্ট</h2>
+            <h2><i class="fas fa-archive"></i> আপনার ফাইলস</h2>
             <button class="close-btn" id="closeHistoryBtn"><i class="fas fa-times"></i></button>
         </div>
         <ul class="history-list" id="historyList"></ul>
     </aside>
 
-    <!-- Toast Notification Container -->
     <div id="toast-container"></div>
 
-    <!-- Scripts (CodeMirror for Syntax Highlighting) -->
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/htmlmixed/htmlmixed.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closetag.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closebrackets.min.js"></script>
+    <!-- JSZip for Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const STORAGE_KEY = 'aethel_supreme_light_v6';
-            const AUTOSAVE_KEY = 'aethel_autosave_light';
-            const VISIT_LOG_KEY = 'aethel_visit_light_counter';
+            const STORAGE_KEY = 'aethel_vibrant_v7';
+            const AUTOSAVE_KEY = 'aethel_autosave_v7';
+            const VISIT_LOG_KEY = 'aethel_visit_counter';
             let currentProjectId = null;
 
-            // --- Visit Counter Logic (১০ বার বা ১ মাস) ---
+            // --- Visit Counter (10 visits or 1 month) ---
             function checkVisitCount() {
                 let visitData = JSON.parse(localStorage.getItem(VISIT_LOG_KEY));
                 const now = Date.now();
-                const oneMonth = 30 * 24 * 60 * 60 * 1000;
-
-                if (!visitData) {
+                if (!visitData || (now - visitData.firstVisit > 30*24*60*60*1000)) {
                     visitData = { count: 1, firstVisit: now };
                 } else {
-                    if (now - visitData.firstVisit > oneMonth) {
-                        visitData = { count: 1, firstVisit: now }; // Reset after 1 month
-                    } else {
-                        visitData.count += 1; // Increment count
-                    }
+                    visitData.count += 1;
                 }
                 localStorage.setItem(VISIT_LOG_KEY, JSON.stringify(visitData));
                 return visitData.count;
             }
             const totalVisits = checkVisitCount();
 
-            // --- UI Elements ---
-            const tabs = document.querySelectorAll('.tab-btn');
-            const contents = document.querySelectorAll('.tab-content');
-            const projectNameInput = document.getElementById('projectName');
-            const statusText = document.getElementById('statusText');
-            const statusDot = document.querySelector('.status-dot');
-
-            // --- Toast Notification ---
+            // --- Toast ---
             function showToast(message, type = 'success') {
                 const container = document.getElementById('toast-container');
                 const toast = document.createElement('div');
@@ -418,23 +392,17 @@
                 const icon = type === 'success' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-info-circle"></i>';
                 toast.innerHTML = `${icon} <span>${message}</span>`;
                 container.appendChild(toast);
-                
                 setTimeout(() => toast.classList.add('show'), 10);
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                    setTimeout(() => toast.remove(), 400);
-                }, 2500);
+                setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2500);
             }
 
-            // --- Setup CodeMirror (Light Theme - idea) ---
+            // --- Setup CodeMirror (FIXED: lineWrapping: false fixes the line bloat issue) ---
             const cmOptions = {
-                theme: 'idea',
+                theme: 'default', // Using default to apply our custom vibrant CSS colors
                 lineNumbers: true,
-                autoCloseTags: true,
-                autoCloseBrackets: true,
+                lineWrapping: false, // THIS STOPS 500 LINES LOOKING LIKE 900
                 indentUnit: 4,
-                tabSize: 4,
-                lineWrapping: true
+                tabSize: 4
             };
 
             const cmHtml = CodeMirror.fromTextArea(document.getElementById('htmlEditor'), { ...cmOptions, mode: 'htmlmixed' });
@@ -442,251 +410,159 @@
             const cmJs = CodeMirror.fromTextArea(document.getElementById('jsEditor'), { ...cmOptions, mode: 'javascript' });
             const editors = { html: cmHtml, css: cmCss, js: cmJs };
 
-            // --- Tab Switching logic ---
+            // --- Tabs ---
+            const tabs = document.querySelectorAll('.tab-btn');
+            const contents = document.querySelectorAll('.tab-content');
             tabs.forEach(tab => {
                 tab.addEventListener('click', () => {
                     tabs.forEach(t => t.classList.remove('active'));
                     contents.forEach(c => c.classList.remove('active'));
-                    
                     tab.classList.add('active');
                     const target = tab.getAttribute('data-target');
                     document.getElementById(`${target}-content`).classList.add('active');
-
-                    if (editors[target]) {
-                        setTimeout(() => editors[target].refresh(), 10);
-                        editors[target].focus();
-                    }
+                    if (editors[target]) { setTimeout(() => editors[target].refresh(), 10); editors[target].focus(); }
                     if (target === 'preview') updatePreview();
                 });
             });
 
-            // --- AutoSave Logic ---
+            // --- AutoSave ---
+            const statusText = document.getElementById('statusText');
+            const statusDot = document.querySelector('.status-dot');
+            const projectNameInput = document.getElementById('projectName');
             let autoSaveTimeout;
+            
             function triggerAutoSave() {
-                statusText.textContent = "টাইপিং...";
-                statusDot.style.backgroundColor = "var(--warning-yellow)";
-                
+                statusText.textContent = "টাইপিং..."; statusDot.style.backgroundColor = "var(--warning-yellow)";
                 clearTimeout(autoSaveTimeout);
                 autoSaveTimeout = setTimeout(() => {
-                    const tempState = {
-                        id: currentProjectId,
-                        name: projectNameInput.value,
-                        html: cmHtml.getValue(),
-                        css: cmCss.getValue(),
-                        js: cmJs.getValue()
-                    };
-                    localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(tempState));
-                    statusText.textContent = "অটো-সেভড";
-                    statusDot.style.backgroundColor = "var(--success-green)";
+                    localStorage.setItem(AUTOSAVE_KEY, JSON.stringify({
+                        id: currentProjectId, name: projectNameInput.value,
+                        html: cmHtml.getValue(), css: cmCss.getValue(), js: cmJs.getValue()
+                    }));
+                    statusText.textContent = "অটো-সেভড"; statusDot.style.backgroundColor = "var(--success-green)";
                 }, 800);
             }
 
-            cmHtml.on('change', triggerAutoSave);
-            cmCss.on('change', triggerAutoSave);
-            cmJs.on('change', triggerAutoSave);
+            cmHtml.on('change', triggerAutoSave); cmCss.on('change', triggerAutoSave); cmJs.on('change', triggerAutoSave);
             projectNameInput.addEventListener('input', triggerAutoSave);
 
-            // --- Default Code Setting based on Visit Count ---
+            // --- Default Code logic ---
             function setInitialCode() {
                 if (totalVisits <= 10) {
-                    // Show beautiful default UI for first 10 visits
-                    cmHtml.setValue(`<div class="welcome-container">\n  <div class="icon">✨</div>\n  <h1>AethelIDE তে স্বাগতম!</h1>\n  <p>এখানে আপনার কোড লিখে প্রিভিউ বাটনে ক্লিক করুন।</p>\n</div>`);
-                    cmCss.setValue(`body {\n  margin: 0;\n  height: 100vh;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  background-color: #f8fafc;\n  font-family: 'Inter', sans-serif;\n}\n\n.welcome-container {\n  background: white;\n  padding: 40px;\n  border-radius: 16px;\n  box-shadow: 0 10px 25px rgba(0,0,0,0.05);\n  text-align: center;\n  border: 1px solid #e2e8f0;\n}\n\nh1 {\n  color: #4f46e5;\n  margin-bottom: 10px;\n}\n\n.icon {\n  font-size: 3rem;\n  margin-bottom: 15px;\n}`);
-                    cmJs.setValue(`// আপনার জাভাস্ক্রিপ্ট এখানে লিখুন\nconsole.log("Ready to code!");`);
+                    cmHtml.setValue(`<div class="box">\n  <h1>🎨 Vibrant IDE</h1>\n  <p>আপনার কোড লিখতে শুরু করুন।</p>\n</div>`);
+                    cmCss.setValue(`body {\n  margin: 0;\n  height: 100vh;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  background: #f1f5f9;\n  font-family: sans-serif;\n}\n\n.box {\n  background: #fff;\n  padding: 30px;\n  border-radius: 12px;\n  box-shadow: 0 4px 15px rgba(0,0,0,0.1);\n  text-align: center;\n  color: #333;\n}`);
+                    cmJs.setValue(`console.log("Welcome to AethelIDE!");`);
                 } else {
-                    // Make completely blank if visits > 10
-                    cmHtml.setValue('');
-                    cmCss.setValue('');
-                    cmJs.setValue('');
+                    cmHtml.setValue(''); cmCss.setValue(''); cmJs.setValue('');
                 }
             }
 
-            // --- NEW BUTTON FIX: Complete Reset ---
+            // --- Button Actions ---
+            // New
             document.getElementById('newBtn').addEventListener('click', () => {
-                if(confirm("নতুন প্রজেক্ট তৈরি করতে চান? বর্তমান কোড সেভ না করলে মুছে যাবে।")) {
-                    // Clear absolutely everything
-                    currentProjectId = null;
-                    projectNameInput.value = '';
+                if(confirm("নতুন প্রজেক্ট তৈরি করবেন? বর্তমান কোড মুছে যাবে।")) {
+                    currentProjectId = null; projectNameInput.value = '';
                     localStorage.removeItem(AUTOSAVE_KEY);
-                    
-                    // Set all editors to completely blank string ""
-                    cmHtml.setValue('');
-                    cmCss.setValue('');
-                    cmJs.setValue('');
-                    
-                    tabs[0].click(); // Return to HTML tab
-                    showToast('এডিটর সম্পূর্ণ পরিষ্কার করা হয়েছে!');
+                    cmHtml.setValue(''); cmCss.setValue(''); cmJs.setValue('');
+                    tabs[0].click(); showToast('নতুন এডিটর খোলা হয়েছে!');
                 }
             });
 
-            // --- Live Preview Generate ---
-            function updatePreview() {
-                const iframe = document.getElementById('previewFrame');
-                const html = cmHtml.getValue();
-                const css = `<style>${cmCss.getValue()}</style>`;
-                const js = `<script>
-                    window.onerror = function(m,u,l) {
-                        document.body.innerHTML += '<div style="background:#fee2e2; color:#ef4444; padding:12px; border:1px solid #ef4444; border-radius:6px; margin-top:10px; font-family:monospace;">JS Error: '+m+' (Line: '+l+')</div>';
-                        return false;
-                    };
-                <\/script><script>${cmJs.getValue()}<\/script>`;
+            // Download Zip (ADDED)
+            document.getElementById('downloadBtn').addEventListener('click', async () => {
+                showToast('জিপ ফাইল তৈরি হচ্ছে...');
+                const zip = new JSZip();
+                const title = projectNameInput.value.trim() || 'Aethel_Project';
+                zip.file("index.html", `<!DOCTYPE html>\n<html>\n<head>\n<title>${title}</title>\n<link rel="stylesheet" href="style.css">\n</head>\n<body>\n${cmHtml.getValue()}\n<script src="script.js"><\/script>\n</body>\n</html>`);
+                zip.file("style.css", cmCss.getValue());
+                zip.file("script.js", cmJs.getValue());
                 
-                const content = `<!DOCTYPE html><html lang="bn"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">${css}</head><body>${html}${js}</body></html>`;
-                
-                const blob = new Blob([content], { type: 'text/html' });
-                const url = URL.createObjectURL(blob);
-                iframe.src = url;
-                iframe.onload = () => URL.revokeObjectURL(url);
-            }
-
-            document.getElementById('refreshPreviewBtn').addEventListener('click', () => {
-                updatePreview();
-                showToast('প্রিভিউ রিলোড হয়েছে');
+                const content = await zip.generateAsync({type: "blob"});
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(content);
+                link.download = `${title}.zip`;
+                link.click();
+                URL.revokeObjectURL(link.href);
+                showToast('ডাউনলোড সফল হয়েছে!');
             });
 
-            // --- Copy & Clear buttons inside editor ---
+            // Editor Toolbars (Copy/Clear)
             document.querySelectorAll('.copy-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    const type = btn.getAttribute('data-type');
-                    navigator.clipboard.writeText(editors[type].getValue()).then(() => {
-                        showToast(`${type.toUpperCase()} কোড কপি করা হয়েছে!`);
-                    });
+                    navigator.clipboard.writeText(editors[btn.getAttribute('data-type')].getValue());
+                    showToast('কোড কপি হয়েছে!');
                 });
             });
-
             document.querySelectorAll('.clear-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    const type = btn.getAttribute('data-type');
-                    if(confirm(`সব ${type.toUpperCase()} কোড মুছে ফেলতে চান?`)) {
-                        editors[type].setValue('');
-                        showToast('কোড মুছে ফেলা হয়েছে', 'error');
-                    }
+                    if(confirm("সব কোড মুছবেন?")) { editors[btn.getAttribute('data-type')].setValue(''); showToast('কোড মোছা হয়েছে', 'error'); }
                 });
             });
 
-            // --- Manual Save Function ---
-            function saveProject() {
-                let name = projectNameInput.value.trim() || `প্রজেক্ট - ${new Date().toLocaleTimeString('bn-BD')}`;
-                projectNameInput.value = name;
-
-                const project = {
-                    id: currentProjectId || 'id_' + Date.now(),
-                    name: name,
-                    html: cmHtml.getValue(),
-                    css: cmCss.getValue(),
-                    js: cmJs.getValue(),
-                    date: new Date().toISOString()
-                };
-
-                let projects = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-                const index = projects.findIndex(p => p.id === project.id);
-                
-                if (index > -1) projects[index] = project;
-                else projects.unshift(project);
-                
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
-                currentProjectId = project.id;
-                triggerAutoSave();
-                
-                showToast('প্রজেক্ট সফলভাবে সেভ হয়েছে!');
-                renderHistory();
+            // Preview
+            function updatePreview() {
+                const iframe = document.getElementById('previewFrame');
+                const content = `<!DOCTYPE html><html lang="bn"><head><style>${cmCss.getValue()}</style></head><body>${cmHtml.getValue()}<script>${cmJs.getValue()}<\/script></body></html>`;
+                const blob = new Blob([content], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                iframe.src = url; iframe.onload = () => URL.revokeObjectURL(url);
             }
+            document.getElementById('refreshPreviewBtn').addEventListener('click', () => { updatePreview(); showToast('রিলোড সম্পন্ন'); });
 
+            // --- History Logic ---
+            function saveProject() {
+                let name = projectNameInput.value.trim() || `প্রজেক্ট ${new Date().toLocaleTimeString()}`;
+                projectNameInput.value = name;
+                const project = { id: currentProjectId || 'id_'+Date.now(), name, html: cmHtml.getValue(), css: cmCss.getValue(), js: cmJs.getValue(), date: new Date().toISOString() };
+                let projects = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+                const idx = projects.findIndex(p => p.id === project.id);
+                if (idx > -1) projects[idx] = project; else projects.unshift(project);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+                currentProjectId = project.id; triggerAutoSave(); showToast('সেভ হয়েছে!'); renderHistory();
+            }
             document.getElementById('saveBtn').addEventListener('click', saveProject);
 
-            // --- Sidebar History Logic ---
-            const historyPanel = document.getElementById('historyPanel');
-            const overlay = document.getElementById('overlay');
-
-            function toggleHistory() {
-                if (!historyPanel.classList.contains('open')) renderHistory();
-                historyPanel.classList.toggle('open');
-                overlay.classList.toggle('active');
-            }
-
+            const historyPanel = document.getElementById('historyPanel'), overlay = document.getElementById('overlay');
+            function toggleHistory() { if(!historyPanel.classList.contains('open')) renderHistory(); historyPanel.classList.toggle('open'); overlay.classList.toggle('active'); }
             document.getElementById('historyBtn').addEventListener('click', toggleHistory);
             document.getElementById('closeHistoryBtn').addEventListener('click', toggleHistory);
             overlay.addEventListener('click', toggleHistory);
 
             function renderHistory() {
-                const list = document.getElementById('historyList');
-                let projects = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-                list.innerHTML = '';
-
-                if (projects.length === 0) {
-                    list.innerHTML = '<li style="text-align:center; padding: 20px; color: var(--text-muted);">কোনো ফাইল সেভ করা নেই।</li>';
-                    return;
-                }
-
+                const list = document.getElementById('historyList'); let projects = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+                list.innerHTML = projects.length ? '' : '<li style="text-align:center; padding: 20px; color: #6b7280;">ফাইল নেই</li>';
                 projects.forEach(p => {
-                    const li = document.createElement('li');
-                    li.className = 'history-item';
-                    const dateObj = new Date(p.date);
-                    const dateStr = dateObj.toLocaleDateString('bn-BD') + ' - ' + dateObj.toLocaleTimeString('bn-BD', {hour: '2-digit', minute:'2-digit'});
-
-                    li.innerHTML = `
-                        <div class="h-info">
-                            <h4>${p.name}</h4>
-                            <p><i class="far fa-clock"></i> ${dateStr}</p>
-                        </div>
-                        <button class="h-delete" title="ডিলিট করুন"><i class="fas fa-trash"></i></button>
-                    `;
-
+                    const li = document.createElement('li'); li.className = 'history-item';
+                    li.innerHTML = `<div class="h-info"><h4>${p.name}</h4><p>${new Date(p.date).toLocaleString('bn-BD')}</p></div><button class="h-delete"><i class="fas fa-trash"></i></button>`;
                     li.addEventListener('click', (e) => {
-                        if (e.target.closest('.h-delete')) return;
-                        currentProjectId = p.id;
-                        projectNameInput.value = p.name;
-                        cmHtml.setValue(p.html);
-                        cmCss.setValue(p.css);
-                        cmJs.setValue(p.js);
-                        tabs[0].click();
-                        toggleHistory();
-                        showToast('ফাইল ওপেন করা হয়েছে');
+                        if(e.target.closest('.h-delete')) return;
+                        currentProjectId = p.id; projectNameInput.value = p.name;
+                        cmHtml.setValue(p.html); cmCss.setValue(p.css); cmJs.setValue(p.js);
+                        tabs[0].click(); toggleHistory(); showToast('লোড হয়েছে');
                     });
-
                     li.querySelector('.h-delete').addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        if (confirm(`"${p.name}" মুছে ফেলতে চান?`)) {
-                            projects = projects.filter(item => item.id !== p.id);
-                            localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
-                            if (currentProjectId === p.id) {
-                                localStorage.removeItem(AUTOSAVE_KEY);
-                                cmHtml.setValue(''); cmCss.setValue(''); cmJs.setValue(''); // Clear if active deleted
-                                currentProjectId = null;
-                            }
-                            renderHistory();
-                            showToast('ফাইল ডিলিট করা হয়েছে', 'error');
+                        e.stopPropagation(); if(confirm("ডিলিট করবেন?")) {
+                            projects = projects.filter(item => item.id !== p.id); localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+                            if(currentProjectId === p.id) document.getElementById('newBtn').click();
+                            renderHistory(); showToast('ডিলিট হয়েছে', 'error');
                         }
                     });
                     list.appendChild(li);
                 });
             }
 
-            // --- Initialization / App Load ---
+            // --- Init ---
             const autosaveData = localStorage.getItem(AUTOSAVE_KEY);
             if (autosaveData) {
                 try {
-                    const data = JSON.parse(autosaveData);
-                    currentProjectId = data.id;
-                    projectNameInput.value = data.name;
-                    cmHtml.setValue(data.html || '');
-                    cmCss.setValue(data.css || '');
-                    cmJs.setValue(data.js || '');
-                    showToast('আপনার আগের কোড রিস্টোর করা হয়েছে');
-                } catch (e) { setInitialCode(); }
-            } else {
-                setInitialCode(); // check visit count and show code or blank
-            }
-            
+                    const data = JSON.parse(autosaveData); currentProjectId = data.id; projectNameInput.value = data.name;
+                    cmHtml.setValue(data.html || ''); cmCss.setValue(data.css || ''); cmJs.setValue(data.js || ''); showToast('কোড রিস্টোর হয়েছে');
+                } catch(e) { setInitialCode(); }
+            } else { setInitialCode(); }
             setTimeout(() => { cmHtml.refresh(); cmCss.refresh(); cmJs.refresh(); }, 200);
 
-            // Save shortcut (Ctrl + S)
-            document.addEventListener('keydown', (e) => {
-                if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-                    e.preventDefault(); saveProject();
-                }
-            });
+            document.addEventListener('keydown', (e) => { if((e.ctrlKey||e.metaKey) && e.key === 's') { e.preventDefault(); saveProject(); }});
         });
     </script>
 </body>
-    </html>
+</html>
