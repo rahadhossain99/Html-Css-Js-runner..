@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AethelIDE Supreme - Live Hosting Edition</title>
+    <title>AethelIDE Supreme - Pro Web Host</title>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
     <!-- CodeMirror Core -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
     
-    <!-- Dependencies for Download and Share (LZ-String for link compression) -->
+    <!-- Dependencies for Download and Share (LZ-String) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
     
@@ -66,9 +66,7 @@
             border-bottom: 1px solid var(--border-color); box-shadow: var(--shadow-sm); z-index: 100;
         }
 
-        .logo {
-            font-size: 1.3rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; letter-spacing: -0.5px; flex-shrink: 0;
-        }
+        .logo { font-size: 1.3rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; letter-spacing: -0.5px; flex-shrink: 0; }
         .logo i { color: var(--primary-blue); font-size: 1.4rem; }
 
         .controls { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
@@ -94,7 +92,6 @@
 
         /* --- Main Content --- */
         .main-wrapper { display: flex; flex-direction: column; flex-grow: 1; padding: 10px; overflow: hidden; }
-
         .editor-container { background: var(--bg-panel); border-radius: var(--radius-lg); border: 1px solid var(--border-color); display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; box-shadow: var(--shadow-md); }
 
         /* --- Tabs --- */
@@ -151,7 +148,7 @@
         .h-delete { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--danger-red); background: #fee2e2; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; opacity: 0; transition: 0.2s; display: flex; justify-content: center; align-items: center;}
         .history-item:hover .h-delete { opacity: 1; }
 
-        /* General Modal Style (For Settings & Share) */
+        /* General Modal Style */
         .custom-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: #fff; width: 90%; max-width: 420px; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); z-index: 1001; display: none; opacity: 0; transition: all 0.3s ease; flex-direction: column; }
         .custom-modal.active { display: flex; opacity: 1; transform: translate(-50%, -50%) scale(1); }
         .modal-body { padding: 20px; }
@@ -163,6 +160,12 @@
         .setting-option strong { font-size: 0.9rem; color: var(--text-main); }
         .setting-option span { font-size: 0.75rem; color: var(--text-muted); line-height: 1.3; margin-top: 3px;}
         .modal-footer { padding: 12px 20px; background: #f8fafc; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 10px; border-bottom-left-radius: var(--radius-lg); border-bottom-right-radius: var(--radius-lg); }
+
+        /* Custom Title Input inside Share Modal */
+        .title-input-container { margin-top: 15px; background: #f8fafc; padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--border-color); }
+        .title-input-container label { font-size: 0.8rem; font-weight: 600; color: var(--text-main); display: block; margin-bottom: 5px; }
+        .title-input-container input { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: var(--font-main); font-size: 0.85rem; outline: none; }
+        .title-input-container input:focus { border-color: var(--primary-blue); }
 
         #toast-container { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none;}
         .toast { background: #1e293b; color: white; padding: 10px 20px; border-radius: 30px; font-size: 0.85rem; font-weight: 500; box-shadow: 0 10px 20px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; opacity: 0; transform: translateY(20px); transition: all 0.3s ease; }
@@ -184,29 +187,32 @@
 </head>
 <body>
 
-    <!-- This script executes FIRST. If it's a "Preview Only" link, it intercepts everything and loads just the website -->
+    <!-- INTERCEPT SCRIPT FOR SHARED LINKS (RUNS FIRST) -->
     <script>
         (function() {
             const urlParams = new URLSearchParams(window.location.search);
             const sharedCode = urlParams.get('code');
             const shareMode = urlParams.get('mode');
+            const customTitle = urlParams.get('title') || 'AethelIDE Hosted App';
+
+            // Set document title early if custom title exists
+            if (urlParams.has('title')) {
+                document.title = customTitle;
+            }
 
             if (sharedCode && shareMode === 'preview') {
                 try {
-                    // We must wait for LZString to be available. Since it's in <head>, it should be ready.
                     if (window.LZString) {
                         const decompressed = LZString.decompressFromEncodedURIComponent(sharedCode);
                         const parsedData = JSON.parse(decompressed);
                         
-                        // Replace entire document content with the user's generated website
-                        const htmlContent = `<!DOCTYPE html>\n<html lang="bn">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>AethelIDE Hosted App</title>\n<style>\n${parsedData.c || ''}\n</style>\n</head>\n<body>\n${parsedData.h || ''}\n<script>\n${parsedData.j || ''}\n<\/script>\n</body>\n</html>`;
+                        const htmlContent = `<!DOCTYPE html>\n<html lang="bn">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>${customTitle}</title>\n<style>\n${parsedData.c || ''}\n</style>\n</head>\n<body>\n${parsedData.h || ''}\n<script>\n${parsedData.j || ''}\n<\/script>\n</body>\n</html>`;
                         
                         document.open("text/html", "replace");
                         document.write(htmlContent);
                         document.close();
                         
-                        // Stop execution of the rest of the IDE scripts
-                        window.stop(); 
+                        window.stop(); // Stop IDE from loading
                     }
                 } catch (e) {
                     console.error("Failed to load preview:", e);
@@ -240,6 +246,7 @@
                 <button class="tab-btn" data-target="preview" id="previewTabBtn" title="প্রিভিউ"><i class="fas fa-play"></i> <span>প্রিভিউ</span></button>
             </div>
 
+            <!-- HTML Editor -->
             <div class="tab-content active" id="html-content">
                 <div class="editor-toolbar">
                     <span class="file-badge">index.html</span>
@@ -251,6 +258,7 @@
                 <textarea id="htmlEditor"></textarea>
             </div>
             
+            <!-- CSS Editor -->
             <div class="tab-content" id="css-content">
                 <div class="editor-toolbar">
                     <span class="file-badge">style.css</span>
@@ -262,6 +270,7 @@
                 <textarea id="cssEditor"></textarea>
             </div>
             
+            <!-- JS Editor -->
             <div class="tab-content" id="js-content">
                 <div class="editor-toolbar">
                     <span class="file-badge">script.js</span>
@@ -273,6 +282,7 @@
                 <textarea id="jsEditor"></textarea>
             </div>
 
+            <!-- Preview -->
             <div class="tab-content" id="preview-content">
                 <div class="preview-toolbar">
                      <button class="action-btn" id="openNewTabBtn" style="color:var(--primary-blue); border-color: #bfdbfe; background: #eff6ff;"><i class="fas fa-external-link-alt"></i> <span>নতুন ট্যাবে</span></button>
@@ -301,7 +311,7 @@
         <ul class="history-list" id="historyList"></ul>
     </aside>
 
-    <!-- Settings Modal -->
+    <!-- Download Settings Modal -->
     <div class="custom-modal" id="settingsModal">
         <div class="modal-body">
             <h3><i class="fas fa-cog"></i> ডাউনলোড সেটিংস</h3>
@@ -319,26 +329,33 @@
         </div>
     </div>
 
-    <!-- Share Settings Modal -->
+    <!-- Share Settings Modal (UPDATED WITH CUSTOM TITLE) -->
     <div class="custom-modal" id="shareModal">
         <div class="modal-body">
             <h3><i class="fas fa-share-alt"></i> শেয়ার লিংক তৈরি</h3>
+            
             <label class="setting-option">
                 <input type="radio" name="share_mode" value="preview" checked>
                 <div>
                     <strong>শুধু প্রিভিউ (Website Mode)</strong>
-                    <span>লিংক খুললে সরাসরি ওয়েবসাইট দেখাবে। কোড এডিটর দেখা যাবে না। কাউকে শুধু ডিজাইন দেখাতে এটি ব্যবহার করুন।</span>
+                    <span>লিংক খুললে সরাসরি ওয়েবসাইট দেখাবে। এডিটর দেখা যাবে না।</span>
                 </div>
             </label>
             <label class="setting-option">
                 <input type="radio" name="share_mode" value="ide">
                 <div>
                     <strong>কোড ও প্রিভিউ (IDE Mode)</strong>
-                    <span>এডিটর সহ ওপেন হবে, যাতে অন্যরাও আপনার কোড দেখতে ও এডিট করতে পারে।</span>
+                    <span>এডিটর সহ ওপেন হবে, যাতে অন্যরাও কোড দেখতে পারে।</span>
                 </div>
             </label>
+
+            <div class="title-input-container">
+                <label for="customShareTitle">লিংকের নাম / টাইটেল (যাতে লিংক চেনা যায়):</label>
+                <input type="text" id="customShareTitle" placeholder="যেমন: My Cool Game">
+            </div>
+
             <div style="margin-top: 15px;">
-                <input type="text" id="shareLinkOutput" readonly style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.8rem; background: #f8fafc; color: var(--primary-blue);" placeholder="লিংক তৈরি হচ্ছে...">
+                <input type="text" id="shareLinkOutput" readonly style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.75rem; background: #f8fafc; color: var(--primary-blue);" placeholder="লিংক তৈরি হচ্ছে...">
             </div>
         </div>
         <div class="modal-footer" style="justify-content: space-between;">
@@ -357,82 +374,28 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // If the document was replaced by the Preview script at the top, DO NOT run IDE initialization.
-            if (document.title === "AethelIDE - Shared Preview") return;
+            // Stop IDE init if Preview Mode took over
+            if (new URLSearchParams(window.location.search).get('mode') === 'preview') return;
 
-            const STORAGE_KEY = 'aethel_final_v12';
-            const AUTOSAVE_KEY = 'aethel_autosave_v12';
+            const STORAGE_KEY = 'aethel_final_v13';
+            const AUTOSAVE_KEY = 'aethel_autosave_v13';
             const VISIT_LOG_KEY = 'aethel_visit_counter';
             const DL_PREF_KEY = 'aethel_download_pref';
             let currentProjectId = null;
 
-            // --- UI Setup & Global Functions ---
             const overlay = document.getElementById('overlay');
             const projectNameInput = document.getElementById('projectName');
             
             function showToast(message, type = 'success') {
                 const container = document.getElementById('toast-container');
-                const toast = document.createElement('div');
-                toast.className = `toast ${type}`;
+                const toast = document.createElement('div'); toast.className = `toast ${type}`;
                 const icon = type === 'success' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-info-circle"></i>';
                 toast.innerHTML = `${icon} <span>${message}</span>`;
-                container.appendChild(toast);
-                setTimeout(() => toast.classList.add('show'), 10);
+                container.appendChild(toast); setTimeout(() => toast.classList.add('show'), 10);
                 setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2500);
             }
 
-            // --- Download Settings Logic ---
-            const settingsModal = document.getElementById('settingsModal');
-            const dlRadios = document.getElementsByName('dl_format');
-            let dlFormat = localStorage.getItem(DL_PREF_KEY) || 'zip';
-            dlRadios.forEach(radio => { if(radio.value === dlFormat) radio.checked = true; });
-
-            document.getElementById('settingsBtn').addEventListener('click', () => { overlay.classList.add('active'); settingsModal.classList.add('active'); });
-            document.getElementById('saveSettingsBtn').addEventListener('click', () => {
-                for(const radio of dlRadios) { if (radio.checked) { dlFormat = radio.value; break; } }
-                localStorage.setItem(DL_PREF_KEY, dlFormat);
-                settingsModal.classList.remove('active'); overlay.classList.remove('active'); showToast('সেটিংস সেভ হয়েছে!');
-            });
-
-            // --- Advanced Share Settings Logic ---
-            const shareModal = document.getElementById('shareModal');
-            const shareModeRadios = document.getElementsByName('share_mode');
-            const shareLinkOutput = document.getElementById('shareLinkOutput');
-            let generatedShareLink = '';
-
-            function generateLink() {
-                const codeData = { h: cmHtml.getValue(), c: cmCss.getValue(), j: cmJs.getValue() };
-                const compressedString = LZString.compressToEncodedURIComponent(JSON.stringify(codeData));
-                const baseUrl = window.location.href.split('?')[0];
-                
-                let selectedMode = 'preview';
-                for(const radio of shareModeRadios) { if (radio.checked) { selectedMode = radio.value; break; } }
-                
-                if (selectedMode === 'preview') {
-                    generatedShareLink = `${baseUrl}?mode=preview&code=${compressedString}`;
-                } else {
-                    generatedShareLink = `${baseUrl}?code=${compressedString}`;
-                }
-                shareLinkOutput.value = generatedShareLink;
-            }
-
-            document.getElementById('openShareModalBtn').addEventListener('click', () => {
-                generateLink(); overlay.classList.add('active'); shareModal.classList.add('active');
-            });
-
-            shareModeRadios.forEach(radio => radio.addEventListener('change', generateLink));
-
-            document.getElementById('copyShareLinkBtn').addEventListener('click', () => {
-                if (generatedShareLink.length > 5000) showToast('লিংক অনেক বড়, কাজ নাও করতে পারে!', 'error');
-                navigator.clipboard.writeText(generatedShareLink).then(() => {
-                    showToast('লিংক কপি হয়েছে! এটি সেন্ড করুন।');
-                    shareModal.classList.remove('active'); overlay.classList.remove('active');
-                }).catch(() => showToast('লিংক কপি করতে সমস্যা হয়েছে।', 'error'));
-            });
-
-            document.getElementById('closeShareModalBtn').addEventListener('click', () => { shareModal.classList.remove('active'); overlay.classList.remove('active'); });
-
-            // --- IDE Core (CodeMirror, Tabs, AutoSave) ---
+            // --- IDE Core ---
             const cmOptions = { theme: 'default', lineNumbers: true, lineWrapping: false, indentUnit: 4, tabSize: 4 };
             const cmHtml = CodeMirror.fromTextArea(document.getElementById('htmlEditor'), { ...cmOptions, mode: 'htmlmixed' });
             const cmCss = CodeMirror.fromTextArea(document.getElementById('cssEditor'), { ...cmOptions, mode: 'css' });
@@ -450,6 +413,7 @@
                 });
             });
 
+            // AutoSave
             const statusText = document.getElementById('statusText'), statusDot = document.querySelector('.status-dot');
             let autoSaveTimeout;
             function triggerAutoSave() {
@@ -462,6 +426,67 @@
             }
             cmHtml.on('change', triggerAutoSave); cmCss.on('change', triggerAutoSave); cmJs.on('change', triggerAutoSave);
             projectNameInput.addEventListener('input', triggerAutoSave);
+
+            // --- Download Settings ---
+            const settingsModal = document.getElementById('settingsModal');
+            const dlRadios = document.getElementsByName('dl_format');
+            let dlFormat = localStorage.getItem(DL_PREF_KEY) || 'zip';
+            dlRadios.forEach(radio => { if(radio.value === dlFormat) radio.checked = true; });
+
+            document.getElementById('settingsBtn').addEventListener('click', () => { overlay.classList.add('active'); settingsModal.classList.add('active'); });
+            document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+                for(const radio of dlRadios) { if (radio.checked) { dlFormat = radio.value; break; } }
+                localStorage.setItem(DL_PREF_KEY, dlFormat);
+                settingsModal.classList.remove('active'); overlay.classList.remove('active'); showToast('সেটিংস সেভ হয়েছে!');
+            });
+
+            // --- Advanced Share Settings (WITH CUSTOM TITLE) ---
+            const shareModal = document.getElementById('shareModal');
+            const shareModeRadios = document.getElementsByName('share_mode');
+            const shareLinkOutput = document.getElementById('shareLinkOutput');
+            const customShareTitleInput = document.getElementById('customShareTitle');
+            let generatedShareLink = '';
+
+            function generateLink() {
+                // Optimize payload: Only include keys if they have content
+                const codeData = {};
+                if (cmHtml.getValue()) codeData.h = cmHtml.getValue();
+                if (cmCss.getValue()) codeData.c = cmCss.getValue();
+                if (cmJs.getValue()) codeData.j = cmJs.getValue();
+
+                const compressedString = LZString.compressToEncodedURIComponent(JSON.stringify(codeData));
+                const baseUrl = window.location.href.split('?')[0];
+                
+                let selectedMode = 'preview';
+                for(const radio of shareModeRadios) { if (radio.checked) { selectedMode = radio.value; break; } }
+                
+                // Get custom title
+                let customTitle = customShareTitleInput.value.trim();
+                let titleQuery = customTitle ? `&title=${encodeURIComponent(customTitle)}` : '';
+                
+                generatedShareLink = `${baseUrl}?mode=${selectedMode}${titleQuery}&code=${compressedString}`;
+                shareLinkOutput.value = generatedShareLink;
+            }
+
+            document.getElementById('openShareModalBtn').addEventListener('click', () => {
+                customShareTitleInput.value = projectNameInput.value.trim(); // prefill with project name
+                generateLink(); 
+                overlay.classList.add('active'); shareModal.classList.add('active');
+            });
+
+            shareModeRadios.forEach(radio => radio.addEventListener('change', generateLink));
+            customShareTitleInput.addEventListener('input', generateLink); // update link as user types title
+
+            document.getElementById('copyShareLinkBtn').addEventListener('click', () => {
+                if (generatedShareLink.length > 5000) showToast('লিংকটি বড়। কোনো কোনো অ্যাপে কাজ নাও করতে পারে।', 'error');
+                navigator.clipboard.writeText(generatedShareLink).then(() => {
+                    showToast('লিংক কপি হয়েছে!');
+                    shareModal.classList.remove('active'); overlay.classList.remove('active');
+                });
+            });
+
+            document.getElementById('closeShareModalBtn').addEventListener('click', () => { shareModal.classList.remove('active'); overlay.classList.remove('active'); });
+
 
             function setInitialCode() {
                 let visitData = JSON.parse(localStorage.getItem(VISIT_LOG_KEY));
@@ -479,7 +504,7 @@
                 }
             }
 
-            // --- Action Buttons (New, Download) ---
+            // --- Action Buttons ---
             document.getElementById('newBtn').addEventListener('click', () => {
                 if(confirm("নতুন প্রজেক্ট তৈরি করবেন? বর্তমান কোড মুছে যাবে।")) {
                     currentProjectId = null; projectNameInput.value = ''; localStorage.removeItem(AUTOSAVE_KEY);
@@ -523,7 +548,7 @@
             document.querySelectorAll('.copy-btn').forEach(btn => { btn.addEventListener('click', () => { navigator.clipboard.writeText(editors[btn.getAttribute('data-type')].getValue()); showToast('কোড কপি হয়েছে!'); }); });
             document.querySelectorAll('.clear-btn').forEach(btn => { btn.addEventListener('click', () => { if(confirm("সব কোড মুছবেন?")) { editors[btn.getAttribute('data-type')].setValue(''); showToast('কোড মোছা হয়েছে', 'error'); } }); });
 
-            // --- History ---
+            // --- Save & History ---
             function saveProject() {
                 let name = projectNameInput.value.trim() || `প্রজেক্ট ${new Date().toLocaleTimeString('bn-BD')}`; projectNameInput.value = name;
                 const project = { id: currentProjectId || 'id_'+Date.now(), name, html: cmHtml.getValue(), css: cmCss.getValue(), js: cmJs.getValue(), date: new Date().toISOString() };
@@ -561,18 +586,21 @@
             // --- Initial Load Logic ---
             const urlParams = new URLSearchParams(window.location.search);
             const sharedCode = urlParams.get('code');
-            const shareMode = urlParams.get('mode');
+            const customTitle = urlParams.get('title');
 
-            if (sharedCode && shareMode !== 'preview') {
+            if (sharedCode) {
                 try {
                     const decompressed = LZString.decompressFromEncodedURIComponent(sharedCode);
                     const parsedData = JSON.parse(decompressed);
                     cmHtml.setValue(parsedData.h || ''); cmCss.setValue(parsedData.c || ''); cmJs.setValue(parsedData.j || '');
+                    
+                    if (customTitle) projectNameInput.value = customTitle; // Set project name from URL title
+
                     showToast('শেয়ার করা কোড এডিটরে লোড হয়েছে!');
-                    window.history.replaceState({}, document.title, window.location.pathname);
+                    window.history.replaceState({}, document.title, window.location.pathname); // clear URL so it doesn't stay there
                     setTimeout(() => { document.getElementById('previewTabBtn').click(); }, 300);
                 } catch (e) { showToast('লিংকটি কাজ করছে না!', 'error'); setInitialCode(); }
-            } else if (!sharedCode) {
+            } else {
                 const autosaveData = localStorage.getItem(AUTOSAVE_KEY);
                 if (autosaveData) {
                     try {
