@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AethelIDE Supreme - Ultimate Edition</title>
+    <title>AethelIDE Supreme🍀</title>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600&display=swap" rel="stylesheet">
@@ -13,6 +13,10 @@
     
     <!-- CodeMirror Core -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    
+    <!-- Dependencies for Download and Share -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
     
     <style>
         :root {
@@ -29,10 +33,12 @@
             --success-green: #10b981;
             --danger-red: #ef4444;
             --accent-purple: #8b5cf6;
+            --share-teal: #0d9488;
             
             --border-color: #e5e7eb;
             --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
             --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
             
             --font-main: 'Inter', 'Noto Sans Bengali', sans-serif;
             --font-code: 'Fira Code', monospace;
@@ -50,7 +56,6 @@
             color: var(--text-main);
             display: flex;
             flex-direction: column;
-            /* Use dvh for perfect mobile sizing */
             height: 100vh;
             height: 100dvh; 
             overflow: hidden;
@@ -84,28 +89,26 @@
             align-items: center;
             gap: 8px;
             letter-spacing: -0.5px;
+            flex-shrink: 0;
         }
         .logo i { color: var(--primary-blue); font-size: 1.4rem; }
 
-        .controls { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; }
+        .controls { 
+            display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; 
+            /* Smooth scrolling on mobile */
+            overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none;
+        }
+        .controls::-webkit-scrollbar { display: none; }
 
-        .input-group { position: relative; }
+        .input-group { position: relative; flex-shrink: 0; }
         .input-group input {
-            background: #f8fafc;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 8px 10px 8px 32px;
-            border-radius: var(--radius-md);
-            font-family: var(--font-main);
-            font-size: 0.85rem;
-            outline: none;
-            transition: var(--transition);
-            width: 160px;
+            background: #f8fafc; border: 1px solid var(--border-color);
+            color: var(--text-main); padding: 8px 10px 8px 32px;
+            border-radius: var(--radius-md); font-family: var(--font-main);
+            font-size: 0.85rem; outline: none; transition: var(--transition);
+            width: 150px;
         }
-        .input-group i {
-            position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
-            color: var(--text-muted); font-size: 0.85rem;
-        }
+        .input-group i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem; }
         .input-group input:focus { border-color: var(--primary-blue); background: #fff; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
 
         /* --- Premium Buttons --- */
@@ -113,10 +116,8 @@
             padding: 8px 12px; border: none; border-radius: var(--radius-md);
             font-family: var(--font-main); font-size: 0.85rem; font-weight: 500;
             cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
-            transition: var(--transition);
-            background: #fff; color: var(--text-main);
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-sm);
+            transition: var(--transition); background: #fff; color: var(--text-main);
+            border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); flex-shrink: 0;
         }
         .btn:hover { background: #f8fafc; transform: translateY(-1px); }
         .btn:active { transform: translateY(0); }
@@ -125,26 +126,22 @@
         .btn-new:hover { background: #d1fae5; }
         .btn-save { color: #fff; background: var(--primary-blue); border-color: var(--primary-blue); }
         .btn-save:hover { background: var(--primary-hover); }
+        .btn-share { color: #fff; background: var(--share-teal); border-color: var(--share-teal); }
+        .btn-share:hover { background: #0f766e; }
         .btn-download { color: var(--accent-purple); border-color: #ddd6fe; background: #f5f3ff; }
         .btn-download:hover { background: #ede9fe; }
 
         /* --- Main Content Area --- */
-        .main-wrapper {
-            display: flex; flex-direction: column; flex-grow: 1; padding: 10px; overflow: hidden;
-        }
+        .main-wrapper { display: flex; flex-direction: column; flex-grow: 1; padding: 10px; overflow: hidden; }
 
         .editor-container {
-            background: var(--bg-panel);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color);
-            display: flex; flex-direction: column; flex-grow: 1; overflow: hidden;
+            background: var(--bg-panel); border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color); display: flex; flex-direction: column; flex-grow: 1; overflow: hidden;
             box-shadow: var(--shadow-md);
         }
 
         /* --- Tabs --- */
-        .tabs-header {
-            display: flex; background: #f8fafc; border-bottom: 1px solid var(--border-color);
-        }
+        .tabs-header { display: flex; background: #f8fafc; border-bottom: 1px solid var(--border-color); }
         .tab-btn {
             flex: 1; padding: 12px 8px; background: transparent; border: none;
             font-family: var(--font-main); font-weight: 600; font-size: 0.9rem; color: var(--text-muted);
@@ -159,7 +156,7 @@
         .tab-btn[data-target="js"] i { color: #f0db4f; }
         .tab-btn[data-target="preview"] i { color: var(--success-green); }
 
-        /* --- Editor Toolbar (Top Actions to prevent hiding) --- */
+        /* --- Editor Toolbar --- */
         .editor-toolbar {
             display: flex; justify-content: space-between; align-items: center;
             padding: 6px 12px; background: #fff; border-bottom: 1px solid #f1f5f9;
@@ -167,10 +164,8 @@
         .file-badge { font-family: var(--font-code); font-size: 0.75rem; color: var(--text-muted); background: #f1f5f9; padding: 3px 8px; border-radius: 4px; }
         .action-group { display: flex; gap: 8px; }
         .action-btn {
-            background: #fff; border: 1px solid var(--border-color);
-            color: var(--text-muted); padding: 5px 10px; border-radius: 6px;
-            cursor: pointer; font-size: 0.75rem; font-weight: 500; transition: var(--transition); display: flex; align-items: center; gap: 5px;
-            box-shadow: var(--shadow-sm);
+            background: #fff; border: 1px solid var(--border-color); color: var(--text-muted); padding: 5px 10px; border-radius: 6px;
+            cursor: pointer; font-size: 0.75rem; font-weight: 500; transition: var(--transition); display: flex; align-items: center; gap: 5px; box-shadow: var(--shadow-sm);
         }
         .action-btn:hover { background: #f8fafc; color: var(--primary-blue); border-color: var(--primary-blue); }
         .action-btn.clear-btn:hover { color: var(--danger-red); border-color: var(--danger-red); }
@@ -178,27 +173,24 @@
         /* --- Tab Content --- */
         .tab-content { display: none; flex-grow: 1; flex-direction: column; height: 100%; position: relative; }
         .tab-content.active { display: flex; animation: fadeIn 0.2s ease; }
-        
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- CodeMirror Custom Vibrant Light Theme --- */
+        /* --- CodeMirror --- */
         .CodeMirror { height: 100%; width: 100%; font-family: var(--font-code); font-size: 13.5px; line-height: 1.4; background: #fff; color: #1e293b; }
         .CodeMirror-gutters { background: #f8fafc; border-right: 1px solid var(--border-color); padding-right: 5px; }
         .CodeMirror-linenumber { color: #cbd5e1; font-size: 12px; }
         .CodeMirror-cursor { border-left: 2px solid var(--primary-blue); }
         .CodeMirror-selected { background: #e0f2fe !important; }
         
-        /* Vibrant Syntax Colors */
-        .cm-s-default .cm-tag { color: #e11d48; font-weight: 500; } /* Pink/Red tags */
-        .cm-s-default .cm-attribute { color: #0284c7; } /* Blue attributes */
-        .cm-s-default .cm-string { color: #16a34a; } /* Green strings */
-        .cm-s-default .cm-keyword { color: #7e22ce; font-weight: 600; } /* Purple keywords */
-        .cm-s-default .cm-def { color: #ea580c; } /* Orange functions/variables */
-        .cm-s-default .cm-comment { color: #94a3b8; font-style: italic; } /* Gray comments */
-        .cm-s-default .cm-number { color: #059669; } /* Dark green numbers */
-        .cm-s-default .cm-property { color: #0f766e; } /* Teal CSS properties */
-        .cm-s-default .cm-qualifier { color: #c026d3; } /* Magenta CSS classes */
-        .cm-s-default .cm-operator { color: #475569; font-weight: bold; }
+        .cm-s-default .cm-tag { color: #e11d48; font-weight: 500; }
+        .cm-s-default .cm-attribute { color: #0284c7; }
+        .cm-s-default .cm-string { color: #16a34a; }
+        .cm-s-default .cm-keyword { color: #7e22ce; font-weight: 600; }
+        .cm-s-default .cm-def { color: #ea580c; }
+        .cm-s-default .cm-comment { color: #94a3b8; font-style: italic; }
+        .cm-s-default .cm-number { color: #059669; }
+        .cm-s-default .cm-property { color: #0f766e; }
+        .cm-s-default .cm-qualifier { color: #c026d3; }
 
         /* --- Preview Iframe --- */
         #previewFrame { width: 100%; height: 100%; border: none; background: #fff; flex-grow: 1; }
@@ -213,9 +205,10 @@
         .status-badge { display: flex; align-items: center; gap: 5px; background: #f1f5f9; padding: 3px 8px; border-radius: 20px; font-weight: 500;}
         .status-dot { width: 8px; height: 8px; border-radius: 50%; background-color: var(--success-green); }
 
-        /* --- Sidebar & Toast CSS --- */
+        /* --- Sidebar & Settings Modal & Toast CSS --- */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); backdrop-filter: blur(2px); z-index: 999; display: none; opacity: 0; transition: 0.3s; }
         .overlay.active { display: block; opacity: 1; }
+        
         .side-panel { position: fixed; top: 0; right: -320px; width: 100%; max-width: 300px; height: 100%; background: #fff; box-shadow: -5px 0 20px rgba(0,0,0,0.1); z-index: 1000; display: flex; flex-direction: column; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .side-panel.open { right: 0; }
         .panel-header { padding: 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
@@ -228,6 +221,27 @@
         .h-info p { font-size: 0.7rem; color: var(--text-muted); }
         .h-delete { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--danger-red); background: #fee2e2; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; opacity: 0; transition: 0.2s; display: flex; justify-content: center; align-items: center;}
         .history-item:hover .h-delete { opacity: 1; }
+
+        /* Settings Modal */
+        .settings-modal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
+            background: #fff; width: 90%; max-width: 400px; border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg); z-index: 1001; display: none; opacity: 0; transition: all 0.3s ease;
+            flex-direction: column;
+        }
+        .settings-modal.active { display: flex; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        .settings-body { padding: 20px; }
+        .settings-body h3 { margin-bottom: 15px; color: var(--text-main); font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .setting-option {
+            display: flex; align-items: center; padding: 12px; border: 1px solid var(--border-color);
+            border-radius: var(--radius-md); margin-bottom: 10px; cursor: pointer; transition: var(--transition);
+        }
+        .setting-option:hover { background: #f8fafc; border-color: var(--primary-blue); }
+        .setting-option input[type="radio"] { margin-right: 12px; accent-color: var(--primary-blue); transform: scale(1.2); }
+        .setting-option div { display: flex; flex-direction: column; }
+        .setting-option strong { font-size: 0.9rem; color: var(--text-main); }
+        .setting-option span { font-size: 0.75rem; color: var(--text-muted); }
+        .settings-footer { padding: 12px 20px; background: #f8fafc; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; border-bottom-left-radius: var(--radius-lg); border-bottom-right-radius: var(--radius-lg); }
         
         #toast-container { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none;}
         .toast { background: #1e293b; color: white; padding: 10px 20px; border-radius: 30px; font-size: 0.85rem; font-weight: 500; box-shadow: 0 10px 20px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; opacity: 0; transform: translateY(20px); transition: all 0.3s ease; }
@@ -235,24 +249,22 @@
         .toast.success i { color: var(--success-green); }
         .toast.error i { color: var(--danger-red); }
 
-        /* --- Desktop vs Mobile Responsiveness --- */
+        /* --- Mobile Responsiveness --- */
         @media (max-width: 768px) {
             .app-header { flex-wrap: wrap; padding: 10px; gap: 8px; }
-            .logo { width: 100%; justify-content: center; font-size: 1.2rem; }
-            .controls { width: 100%; justify-content: space-between; overflow-x: auto; padding-bottom: 2px; }
-            .input-group input { width: 120px; font-size: 0.8rem; padding: 6px 8px 6px 28px; }
+            .logo { width: 100%; justify-content: center; font-size: 1.2rem; margin-bottom: 4px; }
+            .controls { width: 100%; justify-content: flex-start; padding-bottom: 4px; }
+            .input-group input { width: 110px; font-size: 0.8rem; padding: 6px 8px 6px 28px; }
             .input-group i { left: 10px; font-size: 0.8rem; }
             
-            /* Hide Text, Show only icons in header buttons to save space */
             .btn span { display: none; }
-            .btn { padding: 8px 12px; }
+            .btn { padding: 8px 14px; }
             .btn i { margin: 0; font-size: 1.1rem; }
             
             .tab-btn { font-size: 0.8rem; padding: 10px 4px; }
             .tab-btn span { display: none; }
             .tab-btn i { font-size: 1.2rem; margin: 0; }
             
-            /* Action toolbar */
             .editor-toolbar { padding: 4px 8px; }
             .action-btn { padding: 4px 8px; font-size: 0.7rem; }
             .action-btn span { display: none; }
@@ -261,35 +273,32 @@
 </head>
 <body>
 
-    <!-- Header -->
     <header class="app-header">
-        <div class="logo">
-            <i class="fas fa-layer-group"></i> AethelIDE 
-        </div>
+        <div class="logo"><i class="fas fa-layer-group"></i> AethelIDE </div>
         <div class="controls">
             <div class="input-group">
                 <i class="fas fa-pen"></i>
                 <input type="text" id="projectName" placeholder="প্রজেক্টের নাম...">
             </div>
             <button class="btn btn-new" id="newBtn" title="নতুন প্রজেক্ট"><i class="fas fa-plus"></i> <span>নতুন</span></button>
-            <button class="btn btn-save" id="saveBtn" title="কোড সেভ (Ctrl+S)"><i class="fas fa-save"></i> <span>সেভ</span></button>
-            <button class="btn btn-download" id="downloadBtn" title="জিপ ডাউনলোড"><i class="fas fa-file-archive"></i> <span>ডাউনলোড</span></button>
-            <button class="btn btn-history" id="historyBtn" title="ফাইলস"><i class="fas fa-folder-open"></i> <span>ফাইলস</span></button>
+            <button class="btn btn-save" id="saveBtn" title="কোড সেভ"><i class="fas fa-save"></i> <span>সেভ</span></button>
+            <button class="btn btn-share" id="shareBtn" title="কোড শেয়ার করুন (লিংক)"><i class="fas fa-share-alt"></i> <span>শেয়ার</span></button>
+            <button class="btn btn-download" id="downloadBtn" title="ডাউনলোড করুন"><i class="fas fa-download"></i> <span>ডাউনলোড</span></button>
+            <!-- NEW SETTINGS BUTTON -->
+            <button class="btn" id="settingsBtn" title="ডাউনলোড সেটিংস"><i class="fas fa-cog"></i> <span>সেটিংস</span></button>
+            <button class="btn" id="historyBtn" title="ফাইলস" style="color: var(--text-main);"><i class="fas fa-folder-open"></i> <span>ফাইলস</span></button>
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="main-wrapper">
         <div class="editor-container">
-            <!-- Tabs -->
             <div class="tabs-header">
                 <button class="tab-btn active" data-target="html"><i class="fab fa-html5"></i> <span>HTML</span></button>
                 <button class="tab-btn" data-target="css"><i class="fab fa-css3-alt"></i> <span>CSS</span></button>
                 <button class="tab-btn" data-target="js"><i class="fab fa-node-js"></i> <span>JS</span></button>
-                <button class="tab-btn" data-target="preview" id="previewTabBtn" title="প্রিভিউ (Ctrl+Enter)"><i class="fas fa-play"></i> <span>প্রিভিউ</span></button>
+                <button class="tab-btn" data-target="preview" id="previewTabBtn" title="প্রিভিউ"><i class="fas fa-play"></i> <span>প্রিভিউ</span></button>
             </div>
 
-            <!-- HTML Section -->
             <div class="tab-content active" id="html-content">
                 <div class="editor-toolbar">
                     <span class="file-badge">index.html</span>
@@ -301,7 +310,6 @@
                 <textarea id="htmlEditor"></textarea>
             </div>
             
-            <!-- CSS Section -->
             <div class="tab-content" id="css-content">
                 <div class="editor-toolbar">
                     <span class="file-badge">style.css</span>
@@ -313,7 +321,6 @@
                 <textarea id="cssEditor"></textarea>
             </div>
             
-            <!-- JS Section -->
             <div class="tab-content" id="js-content">
                 <div class="editor-toolbar">
                     <span class="file-badge">script.js</span>
@@ -325,11 +332,9 @@
                 <textarea id="jsEditor"></textarea>
             </div>
 
-            <!-- Preview Section -->
             <div class="tab-content" id="preview-content">
                 <div class="preview-toolbar">
-                     <!-- THE MISSING NEW TAB BUTTON IS HERE -->
-                     <button class="action-btn" id="openNewTabBtn" style="color:var(--primary-blue); border-color: #bfdbfe; background: #eff6ff;"><i class="fas fa-external-link-alt"></i> <span>নতুন ট্যাবে খুলুন</span></button>
+                     <button class="action-btn" id="openNewTabBtn" style="color:var(--primary-blue); border-color: #bfdbfe; background: #eff6ff;"><i class="fas fa-external-link-alt"></i> <span>নতুন ট্যাবে</span></button>
                      <button class="action-btn" id="refreshPreviewBtn"><i class="fas fa-sync-alt"></i> <span>রিলোড</span></button>
                 </div>
                 <iframe id="previewFrame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
@@ -337,16 +342,17 @@
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
-        <div>AethelIDE Ultimate</div>
+        <div>AethelIDE Masterpiece</div>
         <div class="status-badge" id="saveStatus">
             <div class="status-dot"></div> <span id="statusText">অটো-সেভড</span>
         </div>
     </footer>
 
-    <!-- History Panel -->
+    <!-- OVERLAYS AND MODALS -->
     <div class="overlay" id="overlay"></div>
+    
+    <!-- History Sidebar -->
     <aside class="side-panel" id="historyPanel">
         <div class="panel-header">
             <h2><i class="fas fa-archive"></i> আপনার ফাইলস</h2>
@@ -355,39 +361,89 @@
         <ul class="history-list" id="historyList"></ul>
     </aside>
 
+    <!-- Settings Modal -->
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-body">
+            <h3><i class="fas fa-cog"></i> ডাউনলোড সেটিংস</h3>
+            
+            <label class="setting-option">
+                <input type="radio" name="dl_format" value="zip">
+                <div>
+                    <strong>ZIP প্যাকেজ (প্রস্তাবিত)</strong>
+                    <span>HTML, CSS এবং JS আলাদা ফাইলে ডাউনলোড হবে।</span>
+                </div>
+            </label>
+            
+            <label class="setting-option">
+                <input type="radio" name="dl_format" value="single">
+                <div>
+                    <strong>সিঙ্গেল HTML ফাইল</strong>
+                    <span>সমস্ত কোড একটিমাত্র HTML ফাইলে যুক্ত হয়ে ডাউনলোড হবে।</span>
+                </div>
+            </label>
+        </div>
+        <div class="settings-footer">
+            <button class="btn btn-save" id="saveSettingsBtn">ওকে</button>
+        </div>
+    </div>
+
     <div id="toast-container"></div>
 
-    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/htmlmixed/htmlmixed.min.js"></script>
-    <!-- JSZip for Download -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const STORAGE_KEY = 'aethel_ultimate_v9';
-            const AUTOSAVE_KEY = 'aethel_autosave_v9';
+            const STORAGE_KEY = 'aethel_master_v11';
+            const AUTOSAVE_KEY = 'aethel_autosave_v11';
             const VISIT_LOG_KEY = 'aethel_visit_counter';
+            const DL_PREF_KEY = 'aethel_download_pref'; // New local storage key for settings
             let currentProjectId = null;
 
-            // --- Visit Counter (10 visits or 1 month) ---
+            // --- 1. Settings Logic ---
+            const overlay = document.getElementById('overlay');
+            const settingsModal = document.getElementById('settingsModal');
+            const dlRadios = document.getElementsByName('dl_format');
+            
+            // Load saved preference
+            let dlFormat = localStorage.getItem(DL_PREF_KEY) || 'zip';
+            dlRadios.forEach(radio => { if(radio.value === dlFormat) radio.checked = true; });
+
+            // Open Settings
+            document.getElementById('settingsBtn').addEventListener('click', () => {
+                overlay.classList.add('active');
+                settingsModal.classList.add('active');
+            });
+
+            // Close Settings and Save Preference
+            document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+                let selectedValue;
+                for(const radio of dlRadios) {
+                    if (radio.checked) { selectedValue = radio.value; break; }
+                }
+                localStorage.setItem(DL_PREF_KEY, selectedValue);
+                dlFormat = selectedValue;
+                
+                settingsModal.classList.remove('active');
+                overlay.classList.remove('active');
+                showToast('সেটিংস সেভ হয়েছে!');
+            });
+
+            // --- 2. Visit Counter ---
             function checkVisitCount() {
                 let visitData = JSON.parse(localStorage.getItem(VISIT_LOG_KEY));
                 const now = Date.now();
                 if (!visitData || (now - visitData.firstVisit > 30*24*60*60*1000)) {
                     visitData = { count: 1, firstVisit: now };
-                } else {
-                    visitData.count += 1;
-                }
+                } else { visitData.count += 1; }
                 localStorage.setItem(VISIT_LOG_KEY, JSON.stringify(visitData));
                 return visitData.count;
             }
             const totalVisits = checkVisitCount();
 
-            // --- Toast ---
             function showToast(message, type = 'success') {
                 const container = document.getElementById('toast-container');
                 const toast = document.createElement('div');
@@ -399,157 +455,131 @@
                 setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2500);
             }
 
-            // --- Setup CodeMirror ---
-            const cmOptions = {
-                theme: 'default', 
-                lineNumbers: true,
-                lineWrapping: false, // Prevents 500 lines turning into 900
-                indentUnit: 4,
-                tabSize: 4
-            };
-
+            // --- 3. CodeMirror & Tabs (Fixed jump) ---
+            const cmOptions = { theme: 'default', lineNumbers: true, lineWrapping: false, indentUnit: 4, tabSize: 4 };
             const cmHtml = CodeMirror.fromTextArea(document.getElementById('htmlEditor'), { ...cmOptions, mode: 'htmlmixed' });
             const cmCss = CodeMirror.fromTextArea(document.getElementById('cssEditor'), { ...cmOptions, mode: 'css' });
             const cmJs = CodeMirror.fromTextArea(document.getElementById('jsEditor'), { ...cmOptions, mode: 'javascript' });
             const editors = { html: cmHtml, css: cmCss, js: cmJs };
 
-            // --- Tabs (No jumping bug!) ---
             const tabs = document.querySelectorAll('.tab-btn');
             const contents = document.querySelectorAll('.tab-content');
             tabs.forEach(tab => {
                 tab.addEventListener('click', () => {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    contents.forEach(c => c.classList.remove('active'));
-                    
-                    tab.classList.add('active');
-                    const target = tab.getAttribute('data-target');
+                    tabs.forEach(t => t.classList.remove('active')); contents.forEach(c => c.classList.remove('active'));
+                    tab.classList.add('active'); const target = tab.getAttribute('data-target');
                     document.getElementById(`${target}-content`).classList.add('active');
-                    
-                    if (editors[target]) { 
-                        setTimeout(() => editors[target].refresh(), 10); 
-                        // Intentionally left out .focus() to prevent auto-scroll jumps
-                    }
+                    if (editors[target]) { setTimeout(() => editors[target].refresh(), 10); } // No .focus() jump
                     if (target === 'preview') updatePreview();
                 });
             });
 
-            // --- AutoSave ---
-            const statusText = document.getElementById('statusText');
-            const statusDot = document.querySelector('.status-dot');
-            const projectNameInput = document.getElementById('projectName');
+            // --- 4. AutoSave ---
+            const statusText = document.getElementById('statusText'), statusDot = document.querySelector('.status-dot'), projectNameInput = document.getElementById('projectName');
             let autoSaveTimeout;
-            
             function triggerAutoSave() {
                 statusText.textContent = "টাইপিং..."; statusDot.style.backgroundColor = "var(--warning-yellow)";
                 clearTimeout(autoSaveTimeout);
                 autoSaveTimeout = setTimeout(() => {
-                    localStorage.setItem(AUTOSAVE_KEY, JSON.stringify({
-                        id: currentProjectId, name: projectNameInput.value,
-                        html: cmHtml.getValue(), css: cmCss.getValue(), js: cmJs.getValue()
-                    }));
+                    localStorage.setItem(AUTOSAVE_KEY, JSON.stringify({ id: currentProjectId, name: projectNameInput.value, html: cmHtml.getValue(), css: cmCss.getValue(), js: cmJs.getValue() }));
                     statusText.textContent = "অটো-সেভড"; statusDot.style.backgroundColor = "var(--success-green)";
                 }, 800);
             }
-
             cmHtml.on('change', triggerAutoSave); cmCss.on('change', triggerAutoSave); cmJs.on('change', triggerAutoSave);
             projectNameInput.addEventListener('input', triggerAutoSave);
 
-            // --- Default Code logic ---
             function setInitialCode() {
                 if (totalVisits <= 10) {
-                    cmHtml.setValue(`<div class="box">\n  <h1>✨ Ultimate IDE</h1>\n  <p>আপনার কোড লিখতে শুরু করুন।</p>\n</div>`);
+                    cmHtml.setValue(`<div class="box">\n  <h1>✨ Supreme Masterpiece</h1>\n  <p>আপনার কোড লিখতে শুরু করুন।</p>\n</div>`);
                     cmCss.setValue(`body {\n  margin: 0;\n  height: 100vh;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  background: #f1f5f9;\n  font-family: sans-serif;\n}\n\n.box {\n  background: #fff;\n  padding: 30px;\n  border-radius: 12px;\n  box-shadow: 0 4px 15px rgba(0,0,0,0.1);\n  text-align: center;\n  color: #333;\n}`);
-                    cmJs.setValue(`console.log("Welcome to AethelIDE Ultimate!");`);
+                    cmJs.setValue(`console.log("Welcome to AethelIDE Final Edition!");`);
                 } else {
                     cmHtml.setValue(''); cmCss.setValue(''); cmJs.setValue('');
                 }
             }
 
-            // --- Button Actions ---
-            // New Project
+            // --- 5. Action Buttons (New, Share, Download) ---
             document.getElementById('newBtn').addEventListener('click', () => {
                 if(confirm("নতুন প্রজেক্ট তৈরি করবেন? বর্তমান কোড মুছে যাবে।")) {
-                    currentProjectId = null; projectNameInput.value = '';
-                    localStorage.removeItem(AUTOSAVE_KEY);
-                    cmHtml.setValue(''); cmCss.setValue(''); cmJs.setValue('');
-                    tabs[0].click(); showToast('নতুন এডিটর খোলা হয়েছে!');
+                    currentProjectId = null; projectNameInput.value = ''; localStorage.removeItem(AUTOSAVE_KEY);
+                    cmHtml.setValue(''); cmCss.setValue(''); cmJs.setValue(''); tabs[0].click(); showToast('নতুন এডিটর খোলা হয়েছে!');
                 }
             });
 
-            // Download Zip
+            document.getElementById('shareBtn').addEventListener('click', () => {
+                const codeData = { h: cmHtml.getValue(), c: cmCss.getValue(), j: cmJs.getValue() };
+                const compressedString = LZString.compressToEncodedURIComponent(JSON.stringify(codeData));
+                const shareableLink = `${window.location.href.split('?')[0]}?code=${compressedString}`;
+                if (shareableLink.length > 5000) showToast('কোড অনেক বড়, লিংকটি কাজ নাও করতে পারে!', 'error');
+                navigator.clipboard.writeText(shareableLink).then(() => showToast('লিংক কপি হয়েছে! এটি যে কাউকে পাঠাতে পারবেন।')).catch(() => showToast('লিংক কপি করতে সমস্যা হয়েছে।', 'error'));
+            });
+
+            // UPDATED DOWNLOAD LOGIC BASED ON SETTINGS
             document.getElementById('downloadBtn').addEventListener('click', async () => {
-                showToast('জিপ ফাইল তৈরি হচ্ছে...');
-                const zip = new JSZip();
                 const title = projectNameInput.value.trim() || 'Aethel_Project';
-                zip.file("index.html", `<!DOCTYPE html>\n<html>\n<head>\n<title>${title}</title>\n<link rel="stylesheet" href="style.css">\n</head>\n<body>\n${cmHtml.getValue()}\n<script src="script.js"><\/script>\n</body>\n</html>`);
-                zip.file("style.css", cmCss.getValue());
-                zip.file("script.js", cmJs.getValue());
-                
-                const content = await zip.generateAsync({type: "blob"});
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(content);
-                link.download = `${title}.zip`;
-                link.click();
-                URL.revokeObjectURL(link.href);
+                const safeTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                showToast('ফাইল তৈরি হচ্ছে...');
+
+                if (dlFormat === 'zip') {
+                    // Download as ZIP (Separate files)
+                    const zip = new JSZip();
+                    zip.file("index.html", `<!DOCTYPE html>\n<html lang="bn">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>${title}</title>\n<link rel="stylesheet" href="style.css">\n</head>\n<body>\n${cmHtml.getValue()}\n<script src="script.js"><\/script>\n</body>\n</html>`);
+                    zip.file("style.css", cmCss.getValue());
+                    zip.file("script.js", cmJs.getValue());
+                    
+                    const content = await zip.generateAsync({type: "blob"});
+                    downloadBlob(content, `${safeTitle}.zip`);
+                } else {
+                    // Download as Single HTML
+                    const content = `<!DOCTYPE html>\n<html lang="bn">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>${title}</title>\n<style>\n${cmCss.getValue()}\n</style>\n</head>\n<body>\n${cmHtml.getValue()}\n<script>\n${cmJs.getValue()}\n<\/script>\n</body>\n</html>`;
+                    const blob = new Blob([content], { type: 'text/html' });
+                    downloadBlob(blob, `${safeTitle}.html`);
+                }
                 showToast('ডাউনলোড সফল হয়েছে!');
             });
 
-            // Editor Toolbars (Copy/Clear)
-            document.querySelectorAll('.copy-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    navigator.clipboard.writeText(editors[btn.getAttribute('data-type')].getValue());
-                    showToast('কোড কপি হয়েছে!');
-                });
-            });
-            document.querySelectorAll('.clear-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    if(confirm("সব কোড মুছবেন?")) { editors[btn.getAttribute('data-type')].setValue(''); showToast('কোড মোছা হয়েছে', 'error'); }
-                });
-            });
-
-            // --- Preview ---
-            function getPreviewContent() {
-                return `<!DOCTYPE html><html lang="bn"><head><style>${cmCss.getValue()}</style></head><body>${cmHtml.getValue()}<script>${cmJs.getValue()}<\/script></body></html>`;
+            function downloadBlob(blob, filename) {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                link.click();
+                URL.revokeObjectURL(link.href);
             }
 
+            // --- 6. Preview Logic ---
+            function getPreviewContent() { return `<!DOCTYPE html><html lang="bn"><head><style>${cmCss.getValue()}</style></head><body>${cmHtml.getValue()}<script>${cmJs.getValue()}<\/script></body></html>`; }
             function updatePreview() {
-                const iframe = document.getElementById('previewFrame');
-                const content = getPreviewContent();
-                const blob = new Blob([content], { type: 'text/html' });
-                const url = URL.createObjectURL(blob);
+                const iframe = document.getElementById('previewFrame'); const content = getPreviewContent();
+                const blob = new Blob([content], { type: 'text/html' }); const url = URL.createObjectURL(blob);
                 iframe.src = url; iframe.onload = () => URL.revokeObjectURL(url);
             }
-            
-            document.getElementById('refreshPreviewBtn').addEventListener('click', () => { 
-                updatePreview(); showToast('রিলোড সম্পন্ন'); 
-            });
+            document.getElementById('refreshPreviewBtn').addEventListener('click', () => { updatePreview(); showToast('রিলোড সম্পন্ন'); });
+            document.getElementById('openNewTabBtn').addEventListener('click', () => { const content = getPreviewContent(); const blob = new Blob([content], { type: 'text/html' }); window.open(URL.createObjectURL(blob), '_blank'); });
 
-            // --- NEW: Open in New Tab ---
-            document.getElementById('openNewTabBtn').addEventListener('click', () => {
-                const content = getPreviewContent();
-                const blob = new Blob([content], { type: 'text/html' });
-                const url = URL.createObjectURL(blob);
-                window.open(url, '_blank');
-            });
+            // Copy & Clear
+            document.querySelectorAll('.copy-btn').forEach(btn => { btn.addEventListener('click', () => { navigator.clipboard.writeText(editors[btn.getAttribute('data-type')].getValue()); showToast('কোড কপি হয়েছে!'); }); });
+            document.querySelectorAll('.clear-btn').forEach(btn => { btn.addEventListener('click', () => { if(confirm("সব কোড মুছবেন?")) { editors[btn.getAttribute('data-type')].setValue(''); showToast('কোড মোছা হয়েছে', 'error'); } }); });
 
-            // --- History Logic ---
+            // --- 7. Saving & History ---
             function saveProject() {
-                let name = projectNameInput.value.trim() || `প্রজেক্ট ${new Date().toLocaleTimeString('bn-BD')}`;
-                projectNameInput.value = name;
+                let name = projectNameInput.value.trim() || `প্রজেক্ট ${new Date().toLocaleTimeString('bn-BD')}`; projectNameInput.value = name;
                 const project = { id: currentProjectId || 'id_'+Date.now(), name, html: cmHtml.getValue(), css: cmCss.getValue(), js: cmJs.getValue(), date: new Date().toISOString() };
                 let projects = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-                const idx = projects.findIndex(p => p.id === project.id);
-                if (idx > -1) projects[idx] = project; else projects.unshift(project);
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
-                currentProjectId = project.id; triggerAutoSave(); showToast('সেভ হয়েছে!'); renderHistory();
+                const idx = projects.findIndex(p => p.id === project.id); if (idx > -1) projects[idx] = project; else projects.unshift(project);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(projects)); currentProjectId = project.id; triggerAutoSave(); showToast('সেভ হয়েছে!'); renderHistory();
             }
             document.getElementById('saveBtn').addEventListener('click', saveProject);
 
-            const historyPanel = document.getElementById('historyPanel'), overlay = document.getElementById('overlay');
+            const historyPanel = document.getElementById('historyPanel');
             function toggleHistory() { if(!historyPanel.classList.contains('open')) renderHistory(); historyPanel.classList.toggle('open'); overlay.classList.toggle('active'); }
-            document.getElementById('historyBtn').addEventListener('click', toggleHistory);
-            document.getElementById('closeHistoryBtn').addEventListener('click', toggleHistory);
-            overlay.addEventListener('click', toggleHistory);
+            document.getElementById('historyBtn').addEventListener('click', toggleHistory); document.getElementById('closeHistoryBtn').addEventListener('click', toggleHistory);
+            
+            // Close overlays clicking outside
+            overlay.addEventListener('click', () => {
+                historyPanel.classList.remove('open');
+                settingsModal.classList.remove('active');
+                overlay.classList.remove('active');
+            });
 
             function renderHistory() {
                 const list = document.getElementById('historyList'); let projects = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
@@ -558,43 +588,47 @@
                     const li = document.createElement('li'); li.className = 'history-item';
                     li.innerHTML = `<div class="h-info"><h4>${p.name}</h4><p>${new Date(p.date).toLocaleString('bn-BD')}</p></div><button class="h-delete"><i class="fas fa-trash"></i></button>`;
                     li.addEventListener('click', (e) => {
-                        if(e.target.closest('.h-delete')) return;
-                        currentProjectId = p.id; projectNameInput.value = p.name;
-                        cmHtml.setValue(p.html); cmCss.setValue(p.css); cmJs.setValue(p.js);
-                        tabs[0].click(); toggleHistory(); showToast('লোড হয়েছে');
+                        if(e.target.closest('.h-delete')) return; currentProjectId = p.id; projectNameInput.value = p.name;
+                        cmHtml.setValue(p.html); cmCss.setValue(p.css); cmJs.setValue(p.js); tabs[0].click(); toggleHistory(); showToast('লোড হয়েছে');
                     });
                     li.querySelector('.h-delete').addEventListener('click', (e) => {
                         e.stopPropagation(); if(confirm("ডিলিট করবেন?")) {
                             projects = projects.filter(item => item.id !== p.id); localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
-                            if(currentProjectId === p.id) document.getElementById('newBtn').click();
-                            renderHistory(); showToast('ডিলিট হয়েছে', 'error');
+                            if(currentProjectId === p.id) document.getElementById('newBtn').click(); renderHistory(); showToast('ডিলিট হয়েছে', 'error');
                         }
-                    });
-                    list.appendChild(li);
+                    }); list.appendChild(li);
                 });
             }
 
-            // --- Init ---
-            const autosaveData = localStorage.getItem(AUTOSAVE_KEY);
-            if (autosaveData) {
+            // --- 8. Load App & Process Shared URL ---
+            const urlParams = new URLSearchParams(window.location.search);
+            const sharedCode = urlParams.get('code');
+
+            if (sharedCode) {
                 try {
-                    const data = JSON.parse(autosaveData); currentProjectId = data.id; projectNameInput.value = data.name;
-                    cmHtml.setValue(data.html || ''); cmCss.setValue(data.css || ''); cmJs.setValue(data.js || ''); showToast('কোড রিস্টোর হয়েছে');
-                } catch(e) { setInitialCode(); }
-            } else { setInitialCode(); }
+                    const decompressed = LZString.decompressFromEncodedURIComponent(sharedCode);
+                    const parsedData = JSON.parse(decompressed);
+                    cmHtml.setValue(parsedData.h || ''); cmCss.setValue(parsedData.c || ''); cmJs.setValue(parsedData.j || '');
+                    showToast('শেয়ার করা কোড লোড হয়েছে!');
+                    window.history.replaceState({}, document.title, window.location.pathname); // clear URL
+                    setTimeout(() => { document.getElementById('previewTabBtn').click(); }, 300);
+                } catch (e) { showToast('লিংকটি কাজ করছে না!', 'error'); setInitialCode(); }
+            } else {
+                const autosaveData = localStorage.getItem(AUTOSAVE_KEY);
+                if (autosaveData) {
+                    try {
+                        const data = JSON.parse(autosaveData); currentProjectId = data.id; projectNameInput.value = data.name;
+                        cmHtml.setValue(data.html || ''); cmCss.setValue(data.css || ''); cmJs.setValue(data.js || ''); showToast('কোড রিস্টোর হয়েছে');
+                    } catch(e) { setInitialCode(); }
+                } else { setInitialCode(); }
+            }
+            
             setTimeout(() => { cmHtml.refresh(); cmCss.refresh(); cmJs.refresh(); }, 200);
 
-            // --- KEYBOARD SHORTCUTS ---
+            // Shortcuts
             document.addEventListener('keydown', (e) => { 
-                // Save: Ctrl+S
-                if((e.ctrlKey||e.metaKey) && e.key === 's') { 
-                    e.preventDefault(); saveProject(); 
-                }
-                // Preview: Ctrl+Enter
-                if((e.ctrlKey||e.metaKey) && e.key === 'Enter') {
-                    e.preventDefault();
-                    document.getElementById('previewTabBtn').click();
-                }
+                if((e.ctrlKey||e.metaKey) && e.key === 's') { e.preventDefault(); saveProject(); }
+                if((e.ctrlKey||e.metaKey) && e.key === 'Enter') { e.preventDefault(); document.getElementById('previewTabBtn').click(); }
             });
         });
     </script>
