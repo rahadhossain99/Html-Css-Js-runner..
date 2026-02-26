@@ -336,7 +336,7 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div>AethelIDE Vibrant</div>
+        <div>AethelIDE Stable</div>
         <div class="status-badge" id="saveStatus">
             <div class="status-dot"></div> <span id="statusText">অটো-সেভড</span>
         </div>
@@ -365,8 +365,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const STORAGE_KEY = 'aethel_vibrant_v7';
-            const AUTOSAVE_KEY = 'aethel_autosave_v7';
+            const STORAGE_KEY = 'aethel_stable_v8';
+            const AUTOSAVE_KEY = 'aethel_autosave_v8';
             const VISIT_LOG_KEY = 'aethel_visit_counter';
             let currentProjectId = null;
 
@@ -396,11 +396,11 @@
                 setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2500);
             }
 
-            // --- Setup CodeMirror (FIXED: lineWrapping: false fixes the line bloat issue) ---
+            // --- Setup CodeMirror ---
             const cmOptions = {
-                theme: 'default', // Using default to apply our custom vibrant CSS colors
+                theme: 'default', 
                 lineNumbers: true,
-                lineWrapping: false, // THIS STOPS 500 LINES LOOKING LIKE 900
+                lineWrapping: false, 
                 indentUnit: 4,
                 tabSize: 4
             };
@@ -410,17 +410,24 @@
             const cmJs = CodeMirror.fromTextArea(document.getElementById('jsEditor'), { ...cmOptions, mode: 'javascript' });
             const editors = { html: cmHtml, css: cmCss, js: cmJs };
 
-            // --- Tabs ---
+            // --- Tabs (FIXED BUG: Removed .focus() to prevent jumping/zooming) ---
             const tabs = document.querySelectorAll('.tab-btn');
             const contents = document.querySelectorAll('.tab-content');
             tabs.forEach(tab => {
                 tab.addEventListener('click', () => {
                     tabs.forEach(t => t.classList.remove('active'));
                     contents.forEach(c => c.classList.remove('active'));
+                    
                     tab.classList.add('active');
                     const target = tab.getAttribute('data-target');
                     document.getElementById(`${target}-content`).classList.add('active');
-                    if (editors[target]) { setTimeout(() => editors[target].refresh(), 10); editors[target].focus(); }
+                    
+                    if (editors[target]) { 
+                        setTimeout(() => {
+                            editors[target].refresh();
+                            // editors[target].focus(); <--- REMOVED THIS LINE. NO MORE JUMPING!
+                        }, 10); 
+                    }
                     if (target === 'preview') updatePreview();
                 });
             });
@@ -468,7 +475,7 @@
                 }
             });
 
-            // Download Zip (ADDED)
+            // Download Zip
             document.getElementById('downloadBtn').addEventListener('click', async () => {
                 showToast('জিপ ফাইল তৈরি হচ্ছে...');
                 const zip = new JSZip();
