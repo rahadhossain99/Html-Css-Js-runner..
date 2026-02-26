@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AethelIDE Supreme - Master Workspace</title>
+    <title>AethelIDE Supreme - Pro Workspace</title>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600&display=swap" rel="stylesheet">
@@ -47,7 +47,6 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* BUG FIX: Strict absolute body to prevent mobile keyboard layout shifts */
         body {
             font-family: var(--font-main); background-color: var(--bg-body); color: var(--text-main);
             position: absolute; top: 0; bottom: 0; left: 0; right: 0;
@@ -80,7 +79,6 @@
         .btn-share { color: #fff; background: var(--share-teal); border-color: var(--share-teal); } .btn-share:hover { background: #0f766e; }
 
         /* --- Main Content Area --- */
-        /* BUG FIX: min-height: 0 ensures flex children don't overflow */
         .main-wrapper { display: flex; flex-direction: column; flex: 1 1 auto; padding: 10px; overflow: hidden; min-height: 0; }
         .editor-container { background: var(--bg-panel); border-radius: var(--radius-lg); border: 1px solid var(--border-color); display: flex; flex-direction: column; flex: 1 1 auto; overflow: hidden; box-shadow: var(--shadow-md); min-height: 0; }
 
@@ -98,12 +96,10 @@
         .action-btn:hover { background: #f8fafc; color: var(--primary-blue); border-color: var(--primary-blue); }
         .action-btn.clear-btn:hover { color: var(--danger-red); border-color: var(--danger-red); }
 
-        /* BUG FIX: Properly constrain CodeMirror wrapper */
         .tab-content { display: none; flex: 1 1 auto; flex-direction: column; height: 100%; position: relative; overflow: hidden; min-height: 0; }
         .tab-content.active { display: flex; animation: fadeIn 0.2s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* BUG FIX: Force CodeMirror to fill container without expanding it */
         .cm-wrapper { flex: 1 1 auto; position: relative; overflow: hidden; min-height: 0; }
         .CodeMirror { position: absolute; top: 0; bottom: 0; left: 0; right: 0; height: 100%; width: 100%; font-family: var(--font-code); font-size: 13.5px; line-height: 1.4; background: #fff; color: #1e293b; }
         .CodeMirror-gutters { background: #f8fafc; border-right: 1px solid var(--border-color); padding-right: 5px; }
@@ -159,6 +155,12 @@
         .title-input-container label { font-size: 0.8rem; font-weight: 600; color: var(--text-main); display: block; margin-bottom: 5px; }
         .title-input-container input { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: var(--font-main); font-size: 0.85rem; outline: none; }
 
+        /* Share Output Block */
+        .share-output-group { display: flex; gap: 6px; margin-top: 15px; }
+        .share-output-group input { flex-grow: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.75rem; background: #f8fafc; color: var(--primary-blue); outline: none;}
+        .btn-shorten { background: var(--primary-blue); color: white; border: none; border-radius: var(--radius-md); padding: 0 12px; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center;}
+        .btn-shorten:hover { background: var(--primary-hover); }
+
         #toast-container { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none;}
         .toast { background: #1e293b; color: white; padding: 10px 20px; border-radius: 30px; font-size: 0.85rem; font-weight: 500; box-shadow: 0 10px 20px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; opacity: 0; transform: translateY(20px); transition: all 0.3s ease; }
         .toast.show { opacity: 1; transform: translateY(0); }
@@ -176,7 +178,7 @@
 </head>
 <body>
 
-    <!-- BUG FIX: UTF-8 Encoding handled in JS for blobs, but keeping this robust interceptor for URL shares -->
+    <!-- PREVIEW MODE INTERCEPTOR -->
     <script>
         (function() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -225,7 +227,6 @@
                 <button class="tab-btn" data-target="preview" id="previewTabBtn"><i class="fas fa-play"></i> <span>প্রিভিউ</span></button>
             </div>
 
-            <!-- HTML Editor with Wrapper -->
             <div class="tab-content active" id="html-content">
                 <div class="editor-toolbar">
                     <span class="file-badge">index.html</span>
@@ -236,8 +237,6 @@
                 </div>
                 <div class="cm-wrapper"><textarea id="htmlEditor"></textarea></div>
             </div>
-            
-            <!-- CSS Editor with Wrapper -->
             <div class="tab-content" id="css-content">
                 <div class="editor-toolbar">
                     <span class="file-badge">style.css</span>
@@ -248,8 +247,6 @@
                 </div>
                 <div class="cm-wrapper"><textarea id="cssEditor"></textarea></div>
             </div>
-            
-            <!-- JS Editor with Wrapper -->
             <div class="tab-content" id="js-content">
                 <div class="editor-toolbar">
                     <span class="file-badge">script.js</span>
@@ -261,7 +258,6 @@
                 <div class="cm-wrapper"><textarea id="jsEditor"></textarea></div>
             </div>
 
-            <!-- Preview -->
             <div class="tab-content" id="preview-content">
                 <div class="preview-toolbar">
                      <button class="action-btn" id="openNewTabBtn" style="color:var(--primary-blue); border-color: #bfdbfe; background: #eff6ff;"><i class="fas fa-external-link-alt"></i> <span>নতুন ট্যাবে</span></button>
@@ -272,7 +268,7 @@
         </div>
     </main>
 
-    <!-- History Panel with Search & Fullscreen -->
+    <!-- History Panel -->
     <div class="overlay" id="overlay"></div>
     <aside class="side-panel" id="historyPanel">
         <div class="panel-header">
@@ -308,6 +304,7 @@
         </div>
     </div>
 
+    <!-- Share Settings Modal with Shortener -->
     <div class="custom-modal" id="shareModal">
         <div class="modal-body">
             <h3><i class="fas fa-share-alt"></i> শেয়ার লিংক তৈরি</h3>
@@ -323,9 +320,12 @@
                 <label for="customShareTitle">লিংকের টাইটেল (যাতে লিংক চেনা যায়):</label>
                 <input type="text" id="customShareTitle" placeholder="যেমন: Project 1">
             </div>
-            <div style="margin-top: 15px;">
-                <input type="text" id="shareLinkOutput" readonly style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.75rem; background: #f8fafc; color: var(--primary-blue);" placeholder="লিংক তৈরি হচ্ছে...">
+            
+            <div class="share-output-group">
+                <input type="text" id="shareLinkOutput" readonly placeholder="লিংক তৈরি হচ্ছে...">
+                <button class="btn-shorten" id="shortenLinkBtn" title="লিংকটি ছোট করুন (Shorten)"><i class="fas fa-compress-arrows-alt"></i></button>
             </div>
+            <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 5px; text-align: center;">কোড খুব বড় হলে লিংক ছোট না-ও হতে পারে।</p>
         </div>
         <div class="modal-footer" style="justify-content: space-between;">
             <button class="btn" id="closeShareModalBtn">বাতিল</button>
@@ -345,8 +345,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (new URLSearchParams(window.location.search).get('mode') === 'preview') return;
 
-            const STORAGE_KEY = 'aethel_master_final_v15';
-            const AUTOSAVE_KEY = 'aethel_autosave_v15';
+            const STORAGE_KEY = 'aethel_master_final_v16';
+            const AUTOSAVE_KEY = 'aethel_autosave_v16';
             const DL_PREF_KEY = 'aethel_download_pref';
             let currentProjectId = null;
 
@@ -361,7 +361,6 @@
                 setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2500);
             }
 
-            // Centralized Modal/Panel Closing Function (BUG FIX 3)
             function closeAllPanels() {
                 document.getElementById('historyPanel').classList.remove('open', 'fullscreen');
                 document.getElementById('expandHistoryBtn').innerHTML = '<i class="fas fa-expand"></i>';
@@ -392,7 +391,6 @@
                 });
             });
 
-            // AutoSave
             let autoSaveTimeout;
             function triggerAutoSave() {
                 clearTimeout(autoSaveTimeout);
@@ -419,9 +417,11 @@
                 localStorage.setItem(DL_PREF_KEY, dlFormat); closeAllPanels(); showToast('সেটিংস সেভ হয়েছে!');
             });
 
-            // Share Link System
+            // --- Share System & URL Shortener ---
             const shareModal = document.getElementById('shareModal');
             const customShareTitleInput = document.getElementById('customShareTitle');
+            const shareLinkOutput = document.getElementById('shareLinkOutput');
+            const shortenLinkBtn = document.getElementById('shortenLinkBtn');
             let generatedShareLink = '';
 
             function generateLink() {
@@ -440,7 +440,8 @@
                 let titleQuery = customTitle ? `&title=${encodeURIComponent(customTitle)}` : '';
                 
                 generatedShareLink = `${baseUrl}?mode=${selectedMode}${titleQuery}&code=${compressedString}`;
-                document.getElementById('shareLinkOutput').value = generatedShareLink;
+                shareLinkOutput.value = generatedShareLink;
+                shortenLinkBtn.innerHTML = '<i class="fas fa-compress-arrows-alt"></i>'; // Reset icon
             }
 
             document.getElementById('openShareModalBtn').addEventListener('click', () => {
@@ -451,6 +452,28 @@
 
             document.getElementsByName('share_mode').forEach(r => r.addEventListener('change', generateLink));
             customShareTitleInput.addEventListener('input', generateLink);
+
+            // URL SHORTENER API INTEGRATION
+            shortenLinkBtn.addEventListener('click', async () => {
+                const longUrl = shareLinkOutput.value;
+                if (!longUrl || longUrl.includes('tinyurl.com')) return;
+
+                shortenLinkBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                try {
+                    const response = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`);
+                    if (response.ok) {
+                        const shortUrl = await response.text();
+                        shareLinkOutput.value = shortUrl;
+                        generatedShareLink = shortUrl;
+                        showToast('লিংক ছোট করা হয়েছে!');
+                    } else {
+                        showToast('কোড অনেক বড় হওয়ায় ছোট করা যাচ্ছে না।', 'error');
+                    }
+                } catch (e) {
+                    showToast('ইন্টারনেট সমস্যা বা এপিআই এরর!', 'error');
+                }
+                shortenLinkBtn.innerHTML = '<i class="fas fa-check"></i>';
+            });
 
             document.getElementById('copyShareLinkBtn').addEventListener('click', () => {
                 navigator.clipboard.writeText(generatedShareLink).then(() => {
@@ -466,11 +489,9 @@
                 }
             });
 
-            // BUG FIX 2: Added UTF-8 Encoding to Blobs for flawless Bengali text in downloads
             document.getElementById('downloadBtn').addEventListener('click', async () => {
                 const title = projectNameInput.value.trim() || 'Project';
                 const safeTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-                
                 if (dlFormat === 'zip') {
                     const zip = new JSZip();
                     zip.file("index.html", `<!DOCTYPE html>\n<html lang="bn">\n<head>\n<meta charset="UTF-8">\n<title>${title}</title>\n<link rel="stylesheet" href="style.css">\n</head>\n<body>\n${cmHtml.getValue()}\n<script src="script.js"><\/script>\n</body>\n</html>`);
@@ -489,7 +510,6 @@
                 link.download = filename; link.click(); URL.revokeObjectURL(link.href);
             }
 
-            // BUG FIX 2: UTF-8 inside Blob for New Tab and Iframe
             function getPreviewContent() { 
                 const title = projectNameInput.value.trim() || 'AethelIDE Preview';
                 return `<!DOCTYPE html>\n<html lang="bn">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>${title}</title>\n<style>${cmCss.getValue()}</style></head><body>${cmHtml.getValue()}<script>${cmJs.getValue()}<\/script></body></html>`; 
@@ -512,7 +532,7 @@
             document.querySelectorAll('.copy-btn').forEach(b => { b.addEventListener('click', () => { navigator.clipboard.writeText(editors[b.getAttribute('data-type')].getValue()); showToast('কপি হয়েছে!'); }); });
             document.querySelectorAll('.clear-btn').forEach(b => { b.addEventListener('click', () => { if(confirm("সব মুছবেন?")) { editors[b.getAttribute('data-type')].setValue(''); showToast('মোছা হয়েছে', 'error'); } }); });
 
-            // --- History System ---
+            // History System
             function getProjects() { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
             
             function saveProject() {
@@ -581,7 +601,7 @@
                 });
             }
 
-            // --- Initial Load ---
+            // Initial Load
             const urlParams = new URLSearchParams(window.location.search);
             const sharedCode = urlParams.get('code');
             const customTitle = urlParams.get('title');
@@ -611,4 +631,4 @@
         });
     </script>
 </body>
-    </html>
+                    </html>
