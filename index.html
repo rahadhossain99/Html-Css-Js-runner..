@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AethelIDE Supreme - Vibrant Light</title>
+    <title>AethelIDE Supreme - Ultimate Edition</title>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600&display=swap" rel="stylesheet">
@@ -167,9 +167,10 @@
         .file-badge { font-family: var(--font-code); font-size: 0.75rem; color: var(--text-muted); background: #f1f5f9; padding: 3px 8px; border-radius: 4px; }
         .action-group { display: flex; gap: 8px; }
         .action-btn {
-            background: transparent; border: 1px solid var(--border-color);
-            color: var(--text-muted); padding: 4px 10px; border-radius: 6px;
-            cursor: pointer; font-size: 0.75rem; font-weight: 500; transition: var(--transition); display: flex; align-items: center; gap: 4px;
+            background: #fff; border: 1px solid var(--border-color);
+            color: var(--text-muted); padding: 5px 10px; border-radius: 6px;
+            cursor: pointer; font-size: 0.75rem; font-weight: 500; transition: var(--transition); display: flex; align-items: center; gap: 5px;
+            box-shadow: var(--shadow-sm);
         }
         .action-btn:hover { background: #f8fafc; color: var(--primary-blue); border-color: var(--primary-blue); }
         .action-btn.clear-btn:hover { color: var(--danger-red); border-color: var(--danger-red); }
@@ -201,7 +202,7 @@
 
         /* --- Preview Iframe --- */
         #previewFrame { width: 100%; height: 100%; border: none; background: #fff; flex-grow: 1; }
-        .preview-toolbar { padding: 8px 12px; background: #f8fafc; display: flex; justify-content: flex-end; border-bottom: 1px solid var(--border-color); }
+        .preview-toolbar { padding: 8px 12px; background: #f8fafc; display: flex; justify-content: flex-end; gap: 8px; border-bottom: 1px solid var(--border-color); }
 
         /* --- Footer --- */
         .footer {
@@ -212,7 +213,7 @@
         .status-badge { display: flex; align-items: center; gap: 5px; background: #f1f5f9; padding: 3px 8px; border-radius: 20px; font-weight: 500;}
         .status-dot { width: 8px; height: 8px; border-radius: 50%; background-color: var(--success-green); }
 
-        /* --- Sidebar & Toast CSS (Same smooth style) --- */
+        /* --- Sidebar & Toast CSS --- */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); backdrop-filter: blur(2px); z-index: 999; display: none; opacity: 0; transition: 0.3s; }
         .overlay.active { display: block; opacity: 1; }
         .side-panel { position: fixed; top: 0; right: -320px; width: 100%; max-width: 300px; height: 100%; background: #fff; box-shadow: -5px 0 20px rgba(0,0,0,0.1); z-index: 1000; display: flex; flex-direction: column; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -271,7 +272,7 @@
                 <input type="text" id="projectName" placeholder="প্রজেক্টের নাম...">
             </div>
             <button class="btn btn-new" id="newBtn" title="নতুন প্রজেক্ট"><i class="fas fa-plus"></i> <span>নতুন</span></button>
-            <button class="btn btn-save" id="saveBtn" title="কোড সেভ"><i class="fas fa-save"></i> <span>সেভ</span></button>
+            <button class="btn btn-save" id="saveBtn" title="কোড সেভ (Ctrl+S)"><i class="fas fa-save"></i> <span>সেভ</span></button>
             <button class="btn btn-download" id="downloadBtn" title="জিপ ডাউনলোড"><i class="fas fa-file-archive"></i> <span>ডাউনলোড</span></button>
             <button class="btn btn-history" id="historyBtn" title="ফাইলস"><i class="fas fa-folder-open"></i> <span>ফাইলস</span></button>
         </div>
@@ -285,7 +286,7 @@
                 <button class="tab-btn active" data-target="html"><i class="fab fa-html5"></i> <span>HTML</span></button>
                 <button class="tab-btn" data-target="css"><i class="fab fa-css3-alt"></i> <span>CSS</span></button>
                 <button class="tab-btn" data-target="js"><i class="fab fa-node-js"></i> <span>JS</span></button>
-                <button class="tab-btn" data-target="preview" id="previewTabBtn"><i class="fas fa-play"></i> <span>প্রিভিউ</span></button>
+                <button class="tab-btn" data-target="preview" id="previewTabBtn" title="প্রিভিউ (Ctrl+Enter)"><i class="fas fa-play"></i> <span>প্রিভিউ</span></button>
             </div>
 
             <!-- HTML Section -->
@@ -327,7 +328,9 @@
             <!-- Preview Section -->
             <div class="tab-content" id="preview-content">
                 <div class="preview-toolbar">
-                     <button class="btn" id="refreshPreviewBtn" style="padding: 4px 10px; font-size: 0.8rem;"><i class="fas fa-sync-alt"></i> <span>রিলোড</span></button>
+                     <!-- THE MISSING NEW TAB BUTTON IS HERE -->
+                     <button class="action-btn" id="openNewTabBtn" style="color:var(--primary-blue); border-color: #bfdbfe; background: #eff6ff;"><i class="fas fa-external-link-alt"></i> <span>নতুন ট্যাবে খুলুন</span></button>
+                     <button class="action-btn" id="refreshPreviewBtn"><i class="fas fa-sync-alt"></i> <span>রিলোড</span></button>
                 </div>
                 <iframe id="previewFrame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
             </div>
@@ -336,7 +339,7 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div>AethelIDE Stable</div>
+        <div>AethelIDE Ultimate</div>
         <div class="status-badge" id="saveStatus">
             <div class="status-dot"></div> <span id="statusText">অটো-সেভড</span>
         </div>
@@ -365,8 +368,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const STORAGE_KEY = 'aethel_stable_v8';
-            const AUTOSAVE_KEY = 'aethel_autosave_v8';
+            const STORAGE_KEY = 'aethel_ultimate_v9';
+            const AUTOSAVE_KEY = 'aethel_autosave_v9';
             const VISIT_LOG_KEY = 'aethel_visit_counter';
             let currentProjectId = null;
 
@@ -400,7 +403,7 @@
             const cmOptions = {
                 theme: 'default', 
                 lineNumbers: true,
-                lineWrapping: false, 
+                lineWrapping: false, // Prevents 500 lines turning into 900
                 indentUnit: 4,
                 tabSize: 4
             };
@@ -410,7 +413,7 @@
             const cmJs = CodeMirror.fromTextArea(document.getElementById('jsEditor'), { ...cmOptions, mode: 'javascript' });
             const editors = { html: cmHtml, css: cmCss, js: cmJs };
 
-            // --- Tabs (FIXED BUG: Removed .focus() to prevent jumping/zooming) ---
+            // --- Tabs (No jumping bug!) ---
             const tabs = document.querySelectorAll('.tab-btn');
             const contents = document.querySelectorAll('.tab-content');
             tabs.forEach(tab => {
@@ -423,10 +426,8 @@
                     document.getElementById(`${target}-content`).classList.add('active');
                     
                     if (editors[target]) { 
-                        setTimeout(() => {
-                            editors[target].refresh();
-                            // editors[target].focus(); <--- REMOVED THIS LINE. NO MORE JUMPING!
-                        }, 10); 
+                        setTimeout(() => editors[target].refresh(), 10); 
+                        // Intentionally left out .focus() to prevent auto-scroll jumps
                     }
                     if (target === 'preview') updatePreview();
                 });
@@ -456,16 +457,16 @@
             // --- Default Code logic ---
             function setInitialCode() {
                 if (totalVisits <= 10) {
-                    cmHtml.setValue(`<div class="box">\n  <h1>🎨 Vibrant IDE</h1>\n  <p>আপনার কোড লিখতে শুরু করুন।</p>\n</div>`);
+                    cmHtml.setValue(`<div class="box">\n  <h1>✨ Ultimate IDE</h1>\n  <p>আপনার কোড লিখতে শুরু করুন।</p>\n</div>`);
                     cmCss.setValue(`body {\n  margin: 0;\n  height: 100vh;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  background: #f1f5f9;\n  font-family: sans-serif;\n}\n\n.box {\n  background: #fff;\n  padding: 30px;\n  border-radius: 12px;\n  box-shadow: 0 4px 15px rgba(0,0,0,0.1);\n  text-align: center;\n  color: #333;\n}`);
-                    cmJs.setValue(`console.log("Welcome to AethelIDE!");`);
+                    cmJs.setValue(`console.log("Welcome to AethelIDE Ultimate!");`);
                 } else {
                     cmHtml.setValue(''); cmCss.setValue(''); cmJs.setValue('');
                 }
             }
 
             // --- Button Actions ---
-            // New
+            // New Project
             document.getElementById('newBtn').addEventListener('click', () => {
                 if(confirm("নতুন প্রজেক্ট তৈরি করবেন? বর্তমান কোড মুছে যাবে।")) {
                     currentProjectId = null; projectNameInput.value = '';
@@ -506,19 +507,34 @@
                 });
             });
 
-            // Preview
+            // --- Preview ---
+            function getPreviewContent() {
+                return `<!DOCTYPE html><html lang="bn"><head><style>${cmCss.getValue()}</style></head><body>${cmHtml.getValue()}<script>${cmJs.getValue()}<\/script></body></html>`;
+            }
+
             function updatePreview() {
                 const iframe = document.getElementById('previewFrame');
-                const content = `<!DOCTYPE html><html lang="bn"><head><style>${cmCss.getValue()}</style></head><body>${cmHtml.getValue()}<script>${cmJs.getValue()}<\/script></body></html>`;
+                const content = getPreviewContent();
                 const blob = new Blob([content], { type: 'text/html' });
                 const url = URL.createObjectURL(blob);
                 iframe.src = url; iframe.onload = () => URL.revokeObjectURL(url);
             }
-            document.getElementById('refreshPreviewBtn').addEventListener('click', () => { updatePreview(); showToast('রিলোড সম্পন্ন'); });
+            
+            document.getElementById('refreshPreviewBtn').addEventListener('click', () => { 
+                updatePreview(); showToast('রিলোড সম্পন্ন'); 
+            });
+
+            // --- NEW: Open in New Tab ---
+            document.getElementById('openNewTabBtn').addEventListener('click', () => {
+                const content = getPreviewContent();
+                const blob = new Blob([content], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                window.open(url, '_blank');
+            });
 
             // --- History Logic ---
             function saveProject() {
-                let name = projectNameInput.value.trim() || `প্রজেক্ট ${new Date().toLocaleTimeString()}`;
+                let name = projectNameInput.value.trim() || `প্রজেক্ট ${new Date().toLocaleTimeString('bn-BD')}`;
                 projectNameInput.value = name;
                 const project = { id: currentProjectId || 'id_'+Date.now(), name, html: cmHtml.getValue(), css: cmCss.getValue(), js: cmJs.getValue(), date: new Date().toISOString() };
                 let projects = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
@@ -568,7 +584,18 @@
             } else { setInitialCode(); }
             setTimeout(() => { cmHtml.refresh(); cmCss.refresh(); cmJs.refresh(); }, 200);
 
-            document.addEventListener('keydown', (e) => { if((e.ctrlKey||e.metaKey) && e.key === 's') { e.preventDefault(); saveProject(); }});
+            // --- KEYBOARD SHORTCUTS ---
+            document.addEventListener('keydown', (e) => { 
+                // Save: Ctrl+S
+                if((e.ctrlKey||e.metaKey) && e.key === 's') { 
+                    e.preventDefault(); saveProject(); 
+                }
+                // Preview: Ctrl+Enter
+                if((e.ctrlKey||e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    document.getElementById('previewTabBtn').click();
+                }
+            });
         });
     </script>
 </body>
