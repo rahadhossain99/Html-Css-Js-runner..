@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AethelIDE Supreme - Pro Web Host</title>
+    <title>AethelIDE Supreme - Master Workspace</title>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
     <!-- CodeMirror Core -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
     
-    <!-- Dependencies for Download and Share (LZ-String) -->
+    <!-- LZ-String & JSZip -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
     
@@ -26,12 +26,10 @@
             
             --text-main: #1f2937;
             --text-muted: #6b7280;
-            
             --primary-blue: #3b82f6;
             --primary-hover: #2563eb;
             --success-green: #10b981;
             --danger-red: #ef4444;
-            --accent-purple: #8b5cf6;
             --share-teal: #0d9488;
             
             --border-color: #e5e7eb;
@@ -49,190 +47,171 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
+        /* BUG FIX: Strict absolute body to prevent mobile keyboard layout shifts */
         body {
             font-family: var(--font-main); background-color: var(--bg-body); color: var(--text-main);
-            display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; -webkit-font-smoothing: antialiased;
+            position: absolute; top: 0; bottom: 0; left: 0; right: 0;
+            display: flex; flex-direction: column; overflow: hidden; -webkit-font-smoothing: antialiased;
         }
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
         /* --- Header --- */
-        .app-header {
-            background: var(--bg-header); backdrop-filter: blur(8px); padding: 10px 16px;
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--border-color); box-shadow: var(--shadow-sm); z-index: 100;
-        }
-
-        .logo { font-size: 1.3rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; letter-spacing: -0.5px; flex-shrink: 0; }
+        .app-header { background: var(--bg-header); backdrop-filter: blur(8px); padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); box-shadow: var(--shadow-sm); z-index: 100; flex-shrink: 0; }
+        .logo { font-size: 1.3rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
         .logo i { color: var(--primary-blue); font-size: 1.4rem; }
 
-        .controls { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+        .controls { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
         .controls::-webkit-scrollbar { display: none; }
 
         .input-group { position: relative; flex-shrink: 0; }
-        .input-group input { background: #f8fafc; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 10px 8px 32px; border-radius: var(--radius-md); font-family: var(--font-main); font-size: 0.85rem; outline: none; transition: var(--transition); width: 150px; }
+        .input-group input { background: #f8fafc; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 10px 8px 32px; border-radius: var(--radius-md); font-family: var(--font-main); font-size: 0.85rem; outline: none; transition: var(--transition); width: 160px; }
         .input-group i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem; }
         .input-group input:focus { border-color: var(--primary-blue); background: #fff; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
 
-        .btn { padding: 8px 12px; border: none; border-radius: var(--radius-md); font-family: var(--font-main); font-size: 0.85rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: var(--transition); background: #fff; color: var(--text-main); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); flex-shrink: 0; }
+        .btn { padding: 8px 12px; border: none; border-radius: var(--radius-md); font-family: var(--font-main); font-size: 0.85rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: var(--transition); background: #fff; color: var(--text-main); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); flex-shrink: 0; white-space: nowrap; }
         .btn:hover { background: #f8fafc; transform: translateY(-1px); }
         .btn:active { transform: translateY(0); }
-        
-        .btn-new { color: var(--success-green); border-color: #a7f3d0; background: #ecfdf5; }
-        .btn-new:hover { background: #d1fae5; }
-        .btn-save { color: #fff; background: var(--primary-blue); border-color: var(--primary-blue); }
-        .btn-save:hover { background: var(--primary-hover); }
-        .btn-share { color: #fff; background: var(--share-teal); border-color: var(--share-teal); }
-        .btn-share:hover { background: #0f766e; }
-        .btn-download { color: var(--accent-purple); border-color: #ddd6fe; background: #f5f3ff; }
-        .btn-download:hover { background: #ede9fe; }
+        .btn-new { color: var(--success-green); border-color: #a7f3d0; background: #ecfdf5; } .btn-new:hover { background: #d1fae5; }
+        .btn-save { color: #fff; background: var(--primary-blue); border-color: var(--primary-blue); } .btn-save:hover { background: var(--primary-hover); }
+        .btn-share { color: #fff; background: var(--share-teal); border-color: var(--share-teal); } .btn-share:hover { background: #0f766e; }
 
-        /* --- Main Content --- */
-        .main-wrapper { display: flex; flex-direction: column; flex-grow: 1; padding: 10px; overflow: hidden; }
-        .editor-container { background: var(--bg-panel); border-radius: var(--radius-lg); border: 1px solid var(--border-color); display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; box-shadow: var(--shadow-md); }
+        /* --- Main Content Area --- */
+        /* BUG FIX: min-height: 0 ensures flex children don't overflow */
+        .main-wrapper { display: flex; flex-direction: column; flex: 1 1 auto; padding: 10px; overflow: hidden; min-height: 0; }
+        .editor-container { background: var(--bg-panel); border-radius: var(--radius-lg); border: 1px solid var(--border-color); display: flex; flex-direction: column; flex: 1 1 auto; overflow: hidden; box-shadow: var(--shadow-md); min-height: 0; }
 
-        /* --- Tabs --- */
-        .tabs-header { display: flex; background: #f8fafc; border-bottom: 1px solid var(--border-color); }
+        /* --- Tabs & Editor --- */
+        .tabs-header { display: flex; background: #f8fafc; border-bottom: 1px solid var(--border-color); flex-shrink: 0; }
         .tab-btn { flex: 1; padding: 12px 8px; background: transparent; border: none; font-family: var(--font-main); font-weight: 600; font-size: 0.9rem; color: var(--text-muted); cursor: pointer; transition: var(--transition); display: flex; justify-content: center; align-items: center; gap: 6px; border-bottom: 2px solid transparent; }
         .tab-btn:hover { color: var(--primary-blue); background: #f1f5f9; }
         .tab-btn.active { color: var(--primary-blue); border-bottom-color: var(--primary-blue); background: var(--bg-panel); }
         .tab-btn[data-target="html"] i { color: #e34c26; } .tab-btn[data-target="css"] i { color: #264de4; } .tab-btn[data-target="js"] i { color: #f0db4f; } .tab-btn[data-target="preview"] i { color: var(--success-green); }
 
-        /* --- Editor Toolbar --- */
-        .editor-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; background: #fff; border-bottom: 1px solid #f1f5f9; }
+        .editor-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; background: #fff; border-bottom: 1px solid #f1f5f9; flex-shrink: 0; }
         .file-badge { font-family: var(--font-code); font-size: 0.75rem; color: var(--text-muted); background: #f1f5f9; padding: 3px 8px; border-radius: 4px; }
         .action-group { display: flex; gap: 8px; }
         .action-btn { background: #fff; border: 1px solid var(--border-color); color: var(--text-muted); padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 500; transition: var(--transition); display: flex; align-items: center; gap: 5px; box-shadow: var(--shadow-sm); }
         .action-btn:hover { background: #f8fafc; color: var(--primary-blue); border-color: var(--primary-blue); }
         .action-btn.clear-btn:hover { color: var(--danger-red); border-color: var(--danger-red); }
 
-        /* --- Content & CodeMirror --- */
-        .tab-content { display: none; flex-grow: 1; flex-direction: column; height: 100%; position: relative; }
+        /* BUG FIX: Properly constrain CodeMirror wrapper */
+        .tab-content { display: none; flex: 1 1 auto; flex-direction: column; height: 100%; position: relative; overflow: hidden; min-height: 0; }
         .tab-content.active { display: flex; animation: fadeIn 0.2s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .CodeMirror { height: 100%; width: 100%; font-family: var(--font-code); font-size: 13.5px; line-height: 1.4; background: #fff; color: #1e293b; }
+        /* BUG FIX: Force CodeMirror to fill container without expanding it */
+        .cm-wrapper { flex: 1 1 auto; position: relative; overflow: hidden; min-height: 0; }
+        .CodeMirror { position: absolute; top: 0; bottom: 0; left: 0; right: 0; height: 100%; width: 100%; font-family: var(--font-code); font-size: 13.5px; line-height: 1.4; background: #fff; color: #1e293b; }
         .CodeMirror-gutters { background: #f8fafc; border-right: 1px solid var(--border-color); padding-right: 5px; }
         .CodeMirror-linenumber { color: #cbd5e1; font-size: 12px; }
-        .CodeMirror-cursor { border-left: 2px solid var(--primary-blue); }
-        .CodeMirror-selected { background: #e0f2fe !important; }
-        
-        .cm-s-default .cm-tag { color: #e11d48; font-weight: 500; } .cm-s-default .cm-attribute { color: #0284c7; } .cm-s-default .cm-string { color: #16a34a; } .cm-s-default .cm-keyword { color: #7e22ce; font-weight: 600; } .cm-s-default .cm-def { color: #ea580c; } .cm-s-default .cm-comment { color: #94a3b8; font-style: italic; } .cm-s-default .cm-number { color: #059669; }
+        .cm-s-default .cm-tag { color: #e11d48; font-weight: 500; } .cm-s-default .cm-attribute { color: #0284c7; } .cm-s-default .cm-string { color: #16a34a; } .cm-s-default .cm-keyword { color: #7e22ce; font-weight: 600; } .cm-s-default .cm-def { color: #ea580c; }
 
-        /* --- Preview Iframe --- */
         #previewFrame { width: 100%; height: 100%; border: none; background: #fff; flex-grow: 1; }
-        .preview-toolbar { padding: 8px 12px; background: #f8fafc; display: flex; justify-content: flex-end; gap: 8px; border-bottom: 1px solid var(--border-color); }
+        .preview-toolbar { padding: 8px 12px; background: #f8fafc; display: flex; justify-content: flex-end; gap: 8px; border-bottom: 1px solid var(--border-color); flex-shrink: 0; }
 
-        /* --- Footer --- */
         .footer { padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-muted); flex-shrink: 0; background: var(--bg-panel); border-top: 1px solid var(--border-color); }
-        .status-badge { display: flex; align-items: center; gap: 5px; background: #f1f5f9; padding: 3px 8px; border-radius: 20px; font-weight: 500;}
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; background-color: var(--success-green); }
+        .status-badge { display: flex; align-items: center; gap: 5px; background: #f1f5f9; padding: 3px 8px; border-radius: 20px; font-weight: 500;} .status-dot { width: 8px; height: 8px; border-radius: 50%; background-color: var(--success-green); }
 
-        /* --- Overlays & Modals --- */
+        /* --- Advanced History Panel --- */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(3px); z-index: 999; display: none; opacity: 0; transition: 0.3s; }
         .overlay.active { display: block; opacity: 1; }
         
-        .side-panel { position: fixed; top: 0; right: -320px; width: 100%; max-width: 300px; height: 100%; background: #fff; box-shadow: -5px 0 20px rgba(0,0,0,0.1); z-index: 1000; display: flex; flex-direction: column; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .side-panel { position: fixed; top: 0; right: -360px; width: 100%; max-width: 340px; height: 100%; background: #fff; box-shadow: -5px 0 20px rgba(0,0,0,0.1); z-index: 1000; display: flex; flex-direction: column; transition: right 0.3s ease, width 0.3s ease, max-width 0.3s ease; }
         .side-panel.open { right: 0; }
+        .side-panel.fullscreen { width: 100%; max-width: 100%; border-left: none; }
+        
         .panel-header { padding: 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
-        .close-btn { background: none; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer; transition: 0.2s;}
-        .close-btn:hover { color: var(--danger-red); transform: rotate(90deg); }
-        .history-list { list-style: none; overflow-y: auto; flex-grow: 1; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+        .panel-header h2 { font-size: 1.1rem; color: var(--text-main); display: flex; align-items: center; gap: 6px;}
+        .panel-header-actions { display: flex; gap: 15px; align-items: center; }
+        .icon-btn { background: none; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; padding: 5px;}
+        .icon-btn:hover { color: var(--primary-blue); }
+        .icon-btn.close-btn:hover { color: var(--danger-red); transform: rotate(90deg); }
+        
+        .history-search-container { padding: 12px 16px; border-bottom: 1px solid var(--border-color); position: relative; background: #fff; }
+        .history-search-container input { width: 100%; padding: 8px 10px 8px 32px; border-radius: 6px; border: 1px solid var(--border-color); font-family: var(--font-main); font-size: 0.85rem; outline: none; transition: var(--transition);}
+        .history-search-container input:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        .history-search-container i { position: absolute; left: 26px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem;}
+
+        .history-list { list-style: none; overflow-y: auto; flex-grow: 1; padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
         .history-item { padding: 12px; background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: 0.2s; position: relative; }
         .history-item:hover { border-color: var(--primary-blue); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
-        .h-info h4 { margin-bottom: 4px; color: var(--text-main); font-size: 0.9rem; font-weight: 600;}
-        .h-info p { font-size: 0.7rem; color: var(--text-muted); }
-        .h-delete { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--danger-red); background: #fee2e2; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; opacity: 0; transition: 0.2s; display: flex; justify-content: center; align-items: center;}
+        .project-number { font-size: 0.7rem; color: var(--primary-blue); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; background: #eff6ff; display: inline-block; padding: 2px 6px; border-radius: 4px;}
+        .h-info h4 { margin-bottom: 5px; color: var(--text-main); font-size: 0.95rem; font-weight: 600;}
+        .h-info p { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px;}
+        .h-delete { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--danger-red); background: #fee2e2; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; opacity: 0; transition: 0.2s; display: flex; justify-content: center; align-items: center;}
         .history-item:hover .h-delete { opacity: 1; }
 
-        /* General Modal Style */
+        /* Modals */
         .custom-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: #fff; width: 90%; max-width: 420px; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); z-index: 1001; display: none; opacity: 0; transition: all 0.3s ease; flex-direction: column; }
         .custom-modal.active { display: flex; opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        .modal-body { padding: 20px; }
-        .modal-body h3 { margin-bottom: 15px; color: var(--text-main); font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .modal-body { padding: 20px; } .modal-body h3 { margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
         .setting-option { display: flex; align-items: center; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 10px; cursor: pointer; transition: var(--transition); }
         .setting-option:hover { background: #f8fafc; border-color: var(--primary-blue); }
         .setting-option input[type="radio"] { margin-right: 12px; accent-color: var(--primary-blue); transform: scale(1.2); }
-        .setting-option div { display: flex; flex-direction: column; }
-        .setting-option strong { font-size: 0.9rem; color: var(--text-main); }
-        .setting-option span { font-size: 0.75rem; color: var(--text-muted); line-height: 1.3; margin-top: 3px;}
+        .setting-option div { display: flex; flex-direction: column; } .setting-option strong { font-size: 0.9rem; } .setting-option span { font-size: 0.75rem; color: var(--text-muted); margin-top: 3px;}
         .modal-footer { padding: 12px 20px; background: #f8fafc; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 10px; border-bottom-left-radius: var(--radius-lg); border-bottom-right-radius: var(--radius-lg); }
 
-        /* Custom Title Input inside Share Modal */
         .title-input-container { margin-top: 15px; background: #f8fafc; padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--border-color); }
         .title-input-container label { font-size: 0.8rem; font-weight: 600; color: var(--text-main); display: block; margin-bottom: 5px; }
         .title-input-container input { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: var(--font-main); font-size: 0.85rem; outline: none; }
-        .title-input-container input:focus { border-color: var(--primary-blue); }
 
         #toast-container { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none;}
         .toast { background: #1e293b; color: white; padding: 10px 20px; border-radius: 30px; font-size: 0.85rem; font-weight: 500; box-shadow: 0 10px 20px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; opacity: 0; transform: translateY(20px); transition: all 0.3s ease; }
         .toast.show { opacity: 1; transform: translateY(0); }
-        .toast.success i { color: var(--success-green); }
-        .toast.error i { color: var(--danger-red); }
+        .toast.success i { color: var(--success-green); } .toast.error i { color: var(--danger-red); }
 
-        /* --- Mobile --- */
         @media (max-width: 768px) {
             .app-header { flex-wrap: wrap; padding: 10px; gap: 8px; }
             .logo { width: 100%; justify-content: center; font-size: 1.2rem; margin-bottom: 4px; }
             .controls { width: 100%; justify-content: flex-start; padding-bottom: 4px; }
-            .input-group input { width: 110px; font-size: 0.8rem; padding: 6px 8px 6px 28px; }
+            .input-group input { width: 120px; }
             .btn span { display: none; } .btn { padding: 8px 14px; } .btn i { margin: 0; font-size: 1.1rem; }
-            .tab-btn { font-size: 0.8rem; padding: 10px 4px; } .tab-btn span { display: none; } .tab-btn i { font-size: 1.2rem; margin: 0; }
-            .editor-toolbar { padding: 4px 8px; } .action-btn { padding: 4px 8px; font-size: 0.7rem; } .action-btn span { display: none; }
+            .tab-btn { padding: 10px 4px; } .tab-btn span { display: none; } .tab-btn i { font-size: 1.2rem; margin: 0; }
         }
     </style>
 </head>
 <body>
 
-    <!-- INTERCEPT SCRIPT FOR SHARED LINKS (RUNS FIRST) -->
+    <!-- BUG FIX: UTF-8 Encoding handled in JS for blobs, but keeping this robust interceptor for URL shares -->
     <script>
         (function() {
             const urlParams = new URLSearchParams(window.location.search);
             const sharedCode = urlParams.get('code');
             const shareMode = urlParams.get('mode');
-            const customTitle = urlParams.get('title') || 'AethelIDE Hosted App';
+            const customTitle = urlParams.get('title') || 'AethelIDE Shared App';
 
-            // Set document title early if custom title exists
-            if (urlParams.has('title')) {
-                document.title = customTitle;
-            }
+            if (urlParams.has('title')) document.title = customTitle;
 
             if (sharedCode && shareMode === 'preview') {
                 try {
                     if (window.LZString) {
                         const decompressed = LZString.decompressFromEncodedURIComponent(sharedCode);
                         const parsedData = JSON.parse(decompressed);
-                        
                         const htmlContent = `<!DOCTYPE html>\n<html lang="bn">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>${customTitle}</title>\n<style>\n${parsedData.c || ''}\n</style>\n</head>\n<body>\n${parsedData.h || ''}\n<script>\n${parsedData.j || ''}\n<\/script>\n</body>\n</html>`;
-                        
-                        document.open("text/html", "replace");
-                        document.write(htmlContent);
-                        document.close();
-                        
-                        window.stop(); // Stop IDE from loading
+                        document.open("text/html", "replace"); document.write(htmlContent); document.close();
+                        window.stop(); 
                     }
-                } catch (e) {
-                    console.error("Failed to load preview:", e);
-                }
+                } catch (e) { console.error("Preview failed:", e); }
             }
         })();
     </script>
 
     <header class="app-header">
-        <div class="logo"><i class="fas fa-layer-group"></i> AethelIDE </div>
+        <div class="logo"><i class="fas fa-layer-group"></i> AethelIDE</div>
         <div class="controls">
             <div class="input-group">
                 <i class="fas fa-pen"></i>
                 <input type="text" id="projectName" placeholder="প্রজেক্টের নাম...">
             </div>
             <button class="btn btn-new" id="newBtn" title="নতুন প্রজেক্ট"><i class="fas fa-plus"></i> <span>নতুন</span></button>
-            <button class="btn btn-save" id="saveBtn" title="কোড সেভ"><i class="fas fa-save"></i> <span>সেভ</span></button>
-            <button class="btn btn-share" id="openShareModalBtn" title="কোড শেয়ার করুন (লিংক)"><i class="fas fa-share-alt"></i> <span>শেয়ার</span></button>
-            <button class="btn btn-download" id="downloadBtn" title="ডাউনলোড করুন"><i class="fas fa-download"></i> <span>ডাউনলোড</span></button>
-            <button class="btn" id="settingsBtn" title="ডাউনলোড সেটিংস"><i class="fas fa-cog"></i> <span>সেটিংস</span></button>
+            <button class="btn btn-save" id="saveBtn" title="সেভ (Ctrl+S)"><i class="fas fa-save"></i> <span>সেভ</span></button>
+            <button class="btn btn-share" id="openShareModalBtn" title="শেয়ার (লিংক)"><i class="fas fa-share-alt"></i> <span>শেয়ার</span></button>
+            <button class="btn" id="downloadBtn" title="ডাউনলোড"><i class="fas fa-download"></i> <span>ডাউনলোড</span></button>
+            <button class="btn" id="settingsBtn" title="সেটিংস"><i class="fas fa-cog"></i></button>
             <button class="btn" id="historyBtn" title="ফাইলস" style="color: var(--text-main);"><i class="fas fa-folder-open"></i> <span>ফাইলস</span></button>
         </div>
     </header>
@@ -243,10 +222,10 @@
                 <button class="tab-btn active" data-target="html"><i class="fab fa-html5"></i> <span>HTML</span></button>
                 <button class="tab-btn" data-target="css"><i class="fab fa-css3-alt"></i> <span>CSS</span></button>
                 <button class="tab-btn" data-target="js"><i class="fab fa-node-js"></i> <span>JS</span></button>
-                <button class="tab-btn" data-target="preview" id="previewTabBtn" title="প্রিভিউ"><i class="fas fa-play"></i> <span>প্রিভিউ</span></button>
+                <button class="tab-btn" data-target="preview" id="previewTabBtn"><i class="fas fa-play"></i> <span>প্রিভিউ</span></button>
             </div>
 
-            <!-- HTML Editor -->
+            <!-- HTML Editor with Wrapper -->
             <div class="tab-content active" id="html-content">
                 <div class="editor-toolbar">
                     <span class="file-badge">index.html</span>
@@ -255,10 +234,10 @@
                         <button class="action-btn clear-btn" data-type="html"><i class="fas fa-eraser"></i> <span>মুছুন</span></button>
                     </div>
                 </div>
-                <textarea id="htmlEditor"></textarea>
+                <div class="cm-wrapper"><textarea id="htmlEditor"></textarea></div>
             </div>
             
-            <!-- CSS Editor -->
+            <!-- CSS Editor with Wrapper -->
             <div class="tab-content" id="css-content">
                 <div class="editor-toolbar">
                     <span class="file-badge">style.css</span>
@@ -267,10 +246,10 @@
                         <button class="action-btn clear-btn" data-type="css"><i class="fas fa-eraser"></i> <span>মুছুন</span></button>
                     </div>
                 </div>
-                <textarea id="cssEditor"></textarea>
+                <div class="cm-wrapper"><textarea id="cssEditor"></textarea></div>
             </div>
             
-            <!-- JS Editor -->
+            <!-- JS Editor with Wrapper -->
             <div class="tab-content" id="js-content">
                 <div class="editor-toolbar">
                     <span class="file-badge">script.js</span>
@@ -279,7 +258,7 @@
                         <button class="action-btn clear-btn" data-type="js"><i class="fas fa-eraser"></i> <span>মুছুন</span></button>
                     </div>
                 </div>
-                <textarea id="jsEditor"></textarea>
+                <div class="cm-wrapper"><textarea id="jsEditor"></textarea></div>
             </div>
 
             <!-- Preview -->
@@ -293,67 +272,57 @@
         </div>
     </main>
 
-    <footer class="footer">
-        <div>AethelIDE Live Host</div>
-        <div class="status-badge" id="saveStatus">
-            <div class="status-dot"></div> <span id="statusText">অটো-সেভড</span>
-        </div>
-    </footer>
-
-    <!-- Overlays & Modals -->
+    <!-- History Panel with Search & Fullscreen -->
     <div class="overlay" id="overlay"></div>
-    
     <aside class="side-panel" id="historyPanel">
         <div class="panel-header">
-            <h2><i class="fas fa-archive"></i> আপনার ফাইলস</h2>
-            <button class="close-btn" id="closeHistoryBtn"><i class="fas fa-times"></i></button>
+            <h2><i class="fas fa-archive"></i> আপনার ফাইলস (<span id="totalProjectsCount">0</span>)</h2>
+            <div class="panel-header-actions">
+                <button class="icon-btn" id="expandHistoryBtn" title="বড় করুন"><i class="fas fa-expand"></i></button>
+                <button class="icon-btn close-btn" id="closeHistoryBtn" title="বন্ধ করুন"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+        <div class="history-search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="historySearch" placeholder="প্রজেক্ট খুঁজুন...">
         </div>
         <ul class="history-list" id="historyList"></ul>
     </aside>
 
-    <!-- Download Settings Modal -->
+    <!-- Modals -->
     <div class="custom-modal" id="settingsModal">
         <div class="modal-body">
             <h3><i class="fas fa-cog"></i> ডাউনলোড সেটিংস</h3>
             <label class="setting-option">
                 <input type="radio" name="dl_format" value="zip">
-                <div><strong>ZIP প্যাকেজ (প্রস্তাবিত)</strong><span>HTML, CSS এবং JS আলাদা ফাইলে ডাউনলোড হবে।</span></div>
+                <div><strong>ZIP প্যাকেজ (প্রস্তাবিত)</strong><span>HTML, CSS এবং JS আলাদা ফাইলে।</span></div>
             </label>
             <label class="setting-option">
                 <input type="radio" name="dl_format" value="single">
-                <div><strong>সিঙ্গেল HTML ফাইল</strong><span>সমস্ত কোড একটিমাত্র ফাইলে যুক্ত হয়ে ডাউনলোড হবে।</span></div>
+                <div><strong>সিঙ্গেল HTML ফাইল</strong><span>সব কোড একটি ফাইলে।</span></div>
             </label>
         </div>
         <div class="modal-footer">
+            <button class="btn" id="closeSettingsBtn">বাতিল</button>
             <button class="btn btn-save" id="saveSettingsBtn">ওকে</button>
         </div>
     </div>
 
-    <!-- Share Settings Modal (UPDATED WITH CUSTOM TITLE) -->
     <div class="custom-modal" id="shareModal">
         <div class="modal-body">
             <h3><i class="fas fa-share-alt"></i> শেয়ার লিংক তৈরি</h3>
-            
             <label class="setting-option">
                 <input type="radio" name="share_mode" value="preview" checked>
-                <div>
-                    <strong>শুধু প্রিভিউ (Website Mode)</strong>
-                    <span>লিংক খুললে সরাসরি ওয়েবসাইট দেখাবে। এডিটর দেখা যাবে না।</span>
-                </div>
+                <div><strong>শুধু প্রিভিউ (Website)</strong><span>লিংক খুললে সরাসরি ওয়েবসাইট দেখাবে।</span></div>
             </label>
             <label class="setting-option">
                 <input type="radio" name="share_mode" value="ide">
-                <div>
-                    <strong>কোড ও প্রিভিউ (IDE Mode)</strong>
-                    <span>এডিটর সহ ওপেন হবে, যাতে অন্যরাও কোড দেখতে পারে।</span>
-                </div>
+                <div><strong>কোড ও প্রিভিউ (IDE)</strong><span>এডিটর সহ ওপেন হবে।</span></div>
             </label>
-
             <div class="title-input-container">
-                <label for="customShareTitle">লিংকের নাম / টাইটেল (যাতে লিংক চেনা যায়):</label>
-                <input type="text" id="customShareTitle" placeholder="যেমন: My Cool Game">
+                <label for="customShareTitle">লিংকের টাইটেল (যাতে লিংক চেনা যায়):</label>
+                <input type="text" id="customShareTitle" placeholder="যেমন: Project 1">
             </div>
-
             <div style="margin-top: 15px;">
                 <input type="text" id="shareLinkOutput" readonly style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.75rem; background: #f8fafc; color: var(--primary-blue);" placeholder="লিংক তৈরি হচ্ছে...">
             </div>
@@ -374,28 +343,38 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Stop IDE init if Preview Mode took over
             if (new URLSearchParams(window.location.search).get('mode') === 'preview') return;
 
-            const STORAGE_KEY = 'aethel_final_v13';
-            const AUTOSAVE_KEY = 'aethel_autosave_v13';
-            const VISIT_LOG_KEY = 'aethel_visit_counter';
+            const STORAGE_KEY = 'aethel_master_final_v15';
+            const AUTOSAVE_KEY = 'aethel_autosave_v15';
             const DL_PREF_KEY = 'aethel_download_pref';
             let currentProjectId = null;
 
-            const overlay = document.getElementById('overlay');
             const projectNameInput = document.getElementById('projectName');
+            const overlay = document.getElementById('overlay');
             
             function showToast(message, type = 'success') {
                 const container = document.getElementById('toast-container');
                 const toast = document.createElement('div'); toast.className = `toast ${type}`;
-                const icon = type === 'success' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-info-circle"></i>';
-                toast.innerHTML = `${icon} <span>${message}</span>`;
+                toast.innerHTML = `${type === 'success' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-info-circle"></i>'} <span>${message}</span>`;
                 container.appendChild(toast); setTimeout(() => toast.classList.add('show'), 10);
                 setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2500);
             }
 
-            // --- IDE Core ---
+            // Centralized Modal/Panel Closing Function (BUG FIX 3)
+            function closeAllPanels() {
+                document.getElementById('historyPanel').classList.remove('open', 'fullscreen');
+                document.getElementById('expandHistoryBtn').innerHTML = '<i class="fas fa-expand"></i>';
+                document.getElementById('settingsModal').classList.remove('active');
+                document.getElementById('shareModal').classList.remove('active');
+                overlay.classList.remove('active');
+            }
+            overlay.addEventListener('click', closeAllPanels);
+            document.getElementById('closeHistoryBtn').addEventListener('click', closeAllPanels);
+            document.getElementById('closeSettingsBtn').addEventListener('click', closeAllPanels);
+            document.getElementById('closeShareModalBtn').addEventListener('click', closeAllPanels);
+
+            // IDE Setup
             const cmOptions = { theme: 'default', lineNumbers: true, lineWrapping: false, indentUnit: 4, tabSize: 4 };
             const cmHtml = CodeMirror.fromTextArea(document.getElementById('htmlEditor'), { ...cmOptions, mode: 'htmlmixed' });
             const cmCss = CodeMirror.fromTextArea(document.getElementById('cssEditor'), { ...cmOptions, mode: 'css' });
@@ -414,120 +393,95 @@
             });
 
             // AutoSave
-            const statusText = document.getElementById('statusText'), statusDot = document.querySelector('.status-dot');
             let autoSaveTimeout;
             function triggerAutoSave() {
-                statusText.textContent = "টাইপিং..."; statusDot.style.backgroundColor = "var(--warning-yellow)";
                 clearTimeout(autoSaveTimeout);
                 autoSaveTimeout = setTimeout(() => {
                     localStorage.setItem(AUTOSAVE_KEY, JSON.stringify({ id: currentProjectId, name: projectNameInput.value, html: cmHtml.getValue(), css: cmCss.getValue(), js: cmJs.getValue() }));
-                    statusText.textContent = "অটো-সেভড"; statusDot.style.backgroundColor = "var(--success-green)";
                 }, 800);
             }
             cmHtml.on('change', triggerAutoSave); cmCss.on('change', triggerAutoSave); cmJs.on('change', triggerAutoSave);
             projectNameInput.addEventListener('input', triggerAutoSave);
 
-            // --- Download Settings ---
-            const settingsModal = document.getElementById('settingsModal');
-            const dlRadios = document.getElementsByName('dl_format');
-            let dlFormat = localStorage.getItem(DL_PREF_KEY) || 'zip';
-            dlRadios.forEach(radio => { if(radio.value === dlFormat) radio.checked = true; });
+            function setInitialCode() {
+                cmHtml.setValue(`<div class="box">\n  <h1>✨ Ultimate IDE</h1>\n  <p>আপনার কোড লিখতে শুরু করুন।</p>\n</div>`);
+                cmCss.setValue(`body {\n  margin: 0;\n  height: 100vh;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  background: #f1f5f9;\n  font-family: sans-serif;\n}\n\n.box {\n  background: #fff;\n  padding: 30px;\n  border-radius: 12px;\n  box-shadow: 0 4px 15px rgba(0,0,0,0.1);\n  text-align: center;\n  color: #333;\n}`);
+                cmJs.setValue(`console.log("Ready!");`);
+            }
 
+            // Settings
+            const settingsModal = document.getElementById('settingsModal');
+            let dlFormat = localStorage.getItem(DL_PREF_KEY) || 'zip';
+            document.getElementsByName('dl_format').forEach(r => { if(r.value === dlFormat) r.checked = true; });
             document.getElementById('settingsBtn').addEventListener('click', () => { overlay.classList.add('active'); settingsModal.classList.add('active'); });
             document.getElementById('saveSettingsBtn').addEventListener('click', () => {
-                for(const radio of dlRadios) { if (radio.checked) { dlFormat = radio.value; break; } }
-                localStorage.setItem(DL_PREF_KEY, dlFormat);
-                settingsModal.classList.remove('active'); overlay.classList.remove('active'); showToast('সেটিংস সেভ হয়েছে!');
+                document.getElementsByName('dl_format').forEach(r => { if (r.checked) dlFormat = r.value; });
+                localStorage.setItem(DL_PREF_KEY, dlFormat); closeAllPanels(); showToast('সেটিংস সেভ হয়েছে!');
             });
 
-            // --- Advanced Share Settings (WITH CUSTOM TITLE) ---
+            // Share Link System
             const shareModal = document.getElementById('shareModal');
-            const shareModeRadios = document.getElementsByName('share_mode');
-            const shareLinkOutput = document.getElementById('shareLinkOutput');
             const customShareTitleInput = document.getElementById('customShareTitle');
             let generatedShareLink = '';
 
             function generateLink() {
-                // Optimize payload: Only include keys if they have content
                 const codeData = {};
-                if (cmHtml.getValue()) codeData.h = cmHtml.getValue();
-                if (cmCss.getValue()) codeData.c = cmCss.getValue();
-                if (cmJs.getValue()) codeData.j = cmJs.getValue();
+                if (cmHtml.getValue().trim()) codeData.h = cmHtml.getValue();
+                if (cmCss.getValue().trim()) codeData.c = cmCss.getValue();
+                if (cmJs.getValue().trim()) codeData.j = cmJs.getValue();
 
                 const compressedString = LZString.compressToEncodedURIComponent(JSON.stringify(codeData));
                 const baseUrl = window.location.href.split('?')[0];
                 
                 let selectedMode = 'preview';
-                for(const radio of shareModeRadios) { if (radio.checked) { selectedMode = radio.value; break; } }
+                document.getElementsByName('share_mode').forEach(r => { if (r.checked) selectedMode = r.value; });
                 
-                // Get custom title
                 let customTitle = customShareTitleInput.value.trim();
                 let titleQuery = customTitle ? `&title=${encodeURIComponent(customTitle)}` : '';
                 
                 generatedShareLink = `${baseUrl}?mode=${selectedMode}${titleQuery}&code=${compressedString}`;
-                shareLinkOutput.value = generatedShareLink;
+                document.getElementById('shareLinkOutput').value = generatedShareLink;
             }
 
             document.getElementById('openShareModalBtn').addEventListener('click', () => {
-                customShareTitleInput.value = projectNameInput.value.trim(); // prefill with project name
-                generateLink(); 
-                overlay.classList.add('active'); shareModal.classList.add('active');
+                let currentName = projectNameInput.value.trim();
+                customShareTitleInput.value = currentName ? currentName : `Project ${getProjects().length + 1}`;
+                generateLink(); overlay.classList.add('active'); shareModal.classList.add('active');
             });
 
-            shareModeRadios.forEach(radio => radio.addEventListener('change', generateLink));
-            customShareTitleInput.addEventListener('input', generateLink); // update link as user types title
+            document.getElementsByName('share_mode').forEach(r => r.addEventListener('change', generateLink));
+            customShareTitleInput.addEventListener('input', generateLink);
 
             document.getElementById('copyShareLinkBtn').addEventListener('click', () => {
-                if (generatedShareLink.length > 5000) showToast('লিংকটি বড়। কোনো কোনো অ্যাপে কাজ নাও করতে পারে।', 'error');
                 navigator.clipboard.writeText(generatedShareLink).then(() => {
-                    showToast('লিংক কপি হয়েছে!');
-                    shareModal.classList.remove('active'); overlay.classList.remove('active');
+                    showToast('লিংক কপি হয়েছে!'); closeAllPanels();
                 });
             });
 
-            document.getElementById('closeShareModalBtn').addEventListener('click', () => { shareModal.classList.remove('active'); overlay.classList.remove('active'); });
-
-
-            function setInitialCode() {
-                let visitData = JSON.parse(localStorage.getItem(VISIT_LOG_KEY));
-                const now = Date.now();
-                if (!visitData || (now - visitData.firstVisit > 30*24*60*60*1000)) visitData = { count: 1, firstVisit: now };
-                else visitData.count += 1;
-                localStorage.setItem(VISIT_LOG_KEY, JSON.stringify(visitData));
-
-                if (visitData.count <= 10) {
-                    cmHtml.setValue(`<div class="box">\n  <h1>✨ Ultimate Web Host</h1>\n  <p>আপনার ডিজাইন শুরু করুন।</p>\n</div>`);
-                    cmCss.setValue(`body {\n  margin: 0;\n  height: 100vh;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  background: #f1f5f9;\n  font-family: sans-serif;\n}\n\n.box {\n  background: #fff;\n  padding: 30px;\n  border-radius: 12px;\n  box-shadow: 0 4px 15px rgba(0,0,0,0.1);\n  text-align: center;\n  color: #333;\n}`);
-                    cmJs.setValue(`console.log("Ready to build and share!");`);
-                } else {
-                    cmHtml.setValue(''); cmCss.setValue(''); cmJs.setValue('');
-                }
-            }
-
-            // --- Action Buttons ---
+            // Actions
             document.getElementById('newBtn').addEventListener('click', () => {
-                if(confirm("নতুন প্রজেক্ট তৈরি করবেন? বর্তমান কোড মুছে যাবে।")) {
+                if(confirm("নতুন প্রজেক্ট তৈরি করবেন?")) {
                     currentProjectId = null; projectNameInput.value = ''; localStorage.removeItem(AUTOSAVE_KEY);
                     cmHtml.setValue(''); cmCss.setValue(''); cmJs.setValue(''); tabs[0].click(); showToast('নতুন এডিটর খোলা হয়েছে!');
                 }
             });
 
+            // BUG FIX 2: Added UTF-8 Encoding to Blobs for flawless Bengali text in downloads
             document.getElementById('downloadBtn').addEventListener('click', async () => {
-                const title = projectNameInput.value.trim() || 'Aethel_Project';
+                const title = projectNameInput.value.trim() || 'Project';
                 const safeTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-                showToast('ফাইল তৈরি হচ্ছে...');
-
+                
                 if (dlFormat === 'zip') {
                     const zip = new JSZip();
-                    zip.file("index.html", `<!DOCTYPE html>\n<html lang="bn">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>${title}</title>\n<link rel="stylesheet" href="style.css">\n</head>\n<body>\n${cmHtml.getValue()}\n<script src="script.js"><\/script>\n</body>\n</html>`);
+                    zip.file("index.html", `<!DOCTYPE html>\n<html lang="bn">\n<head>\n<meta charset="UTF-8">\n<title>${title}</title>\n<link rel="stylesheet" href="style.css">\n</head>\n<body>\n${cmHtml.getValue()}\n<script src="script.js"><\/script>\n</body>\n</html>`);
                     zip.file("style.css", cmCss.getValue()); zip.file("script.js", cmJs.getValue());
                     const content = await zip.generateAsync({type: "blob"});
                     downloadBlob(content, `${safeTitle}.zip`);
                 } else {
-                    const content = `<!DOCTYPE html>\n<html lang="bn">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>${title}</title>\n<style>\n${cmCss.getValue()}\n</style>\n</head>\n<body>\n${cmHtml.getValue()}\n<script>\n${cmJs.getValue()}\n<\/script>\n</body>\n</html>`;
-                    downloadBlob(new Blob([content], { type: 'text/html' }), `${safeTitle}.html`);
+                    const content = `<!DOCTYPE html>\n<html lang="bn">\n<head>\n<meta charset="UTF-8">\n<title>${title}</title>\n<style>\n${cmCss.getValue()}\n</style>\n</head>\n<body>\n${cmHtml.getValue()}\n<script>\n${cmJs.getValue()}\n<\/script>\n</body>\n</html>`;
+                    downloadBlob(new Blob([content], { type: 'text/html;charset=utf-8' }), `${safeTitle}.html`);
                 }
-                showToast('ডাউনলোড সফল হয়েছে!');
+                showToast('ডাউনলোড সফল!');
             });
 
             function downloadBlob(blob, filename) {
@@ -535,55 +489,99 @@
                 link.download = filename; link.click(); URL.revokeObjectURL(link.href);
             }
 
-            // --- Preview ---
-            function getPreviewContent() { return `<!DOCTYPE html><html lang="bn"><head><style>${cmCss.getValue()}</style></head><body>${cmHtml.getValue()}<script>${cmJs.getValue()}<\/script></body></html>`; }
-            function updatePreview() {
-                const iframe = document.getElementById('previewFrame'); const blob = new Blob([getPreviewContent()], { type: 'text/html' });
-                const url = URL.createObjectURL(blob); iframe.src = url; iframe.onload = () => URL.revokeObjectURL(url);
+            // BUG FIX 2: UTF-8 inside Blob for New Tab and Iframe
+            function getPreviewContent() { 
+                const title = projectNameInput.value.trim() || 'AethelIDE Preview';
+                return `<!DOCTYPE html>\n<html lang="bn">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>${title}</title>\n<style>${cmCss.getValue()}</style></head><body>${cmHtml.getValue()}<script>${cmJs.getValue()}<\/script></body></html>`; 
             }
+            
+            function updatePreview() {
+                const iframe = document.getElementById('previewFrame'); 
+                const blob = new Blob([getPreviewContent()], { type: 'text/html;charset=utf-8' }); 
+                iframe.src = URL.createObjectURL(blob); 
+                iframe.onload = () => URL.revokeObjectURL(iframe.src);
+            }
+            
             document.getElementById('refreshPreviewBtn').addEventListener('click', () => { updatePreview(); showToast('রিলোড সম্পন্ন'); });
-            document.getElementById('openNewTabBtn').addEventListener('click', () => { window.open(URL.createObjectURL(new Blob([getPreviewContent()], { type: 'text/html' })), '_blank'); });
+            
+            document.getElementById('openNewTabBtn').addEventListener('click', () => {
+                const blob = new Blob([getPreviewContent()], { type: 'text/html;charset=utf-8' });
+                window.open(URL.createObjectURL(blob), '_blank');
+            });
 
-            // Copy & Clear
-            document.querySelectorAll('.copy-btn').forEach(btn => { btn.addEventListener('click', () => { navigator.clipboard.writeText(editors[btn.getAttribute('data-type')].getValue()); showToast('কোড কপি হয়েছে!'); }); });
-            document.querySelectorAll('.clear-btn').forEach(btn => { btn.addEventListener('click', () => { if(confirm("সব কোড মুছবেন?")) { editors[btn.getAttribute('data-type')].setValue(''); showToast('কোড মোছা হয়েছে', 'error'); } }); });
+            document.querySelectorAll('.copy-btn').forEach(b => { b.addEventListener('click', () => { navigator.clipboard.writeText(editors[b.getAttribute('data-type')].getValue()); showToast('কপি হয়েছে!'); }); });
+            document.querySelectorAll('.clear-btn').forEach(b => { b.addEventListener('click', () => { if(confirm("সব মুছবেন?")) { editors[b.getAttribute('data-type')].setValue(''); showToast('মোছা হয়েছে', 'error'); } }); });
 
-            // --- Save & History ---
+            // --- History System ---
+            function getProjects() { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+            
             function saveProject() {
-                let name = projectNameInput.value.trim() || `প্রজেক্ট ${new Date().toLocaleTimeString('bn-BD')}`; projectNameInput.value = name;
+                const projects = getProjects();
+                let name = projectNameInput.value.trim();
+                if (!name) { name = `Project ${projects.length + 1}`; projectNameInput.value = name; }
+                
                 const project = { id: currentProjectId || 'id_'+Date.now(), name, html: cmHtml.getValue(), css: cmCss.getValue(), js: cmJs.getValue(), date: new Date().toISOString() };
-                let projects = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-                const idx = projects.findIndex(p => p.id === project.id); if (idx > -1) projects[idx] = project; else projects.unshift(project);
+                const idx = projects.findIndex(p => p.id === project.id); 
+                if (idx > -1) projects[idx] = project; else projects.unshift(project);
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(projects)); currentProjectId = project.id; triggerAutoSave(); showToast('সেভ হয়েছে!'); renderHistory();
             }
             document.getElementById('saveBtn').addEventListener('click', saveProject);
 
             const historyPanel = document.getElementById('historyPanel');
-            function toggleHistory() { if(!historyPanel.classList.contains('open')) renderHistory(); historyPanel.classList.toggle('open'); overlay.classList.toggle('active'); }
-            document.getElementById('historyBtn').addEventListener('click', toggleHistory); document.getElementById('closeHistoryBtn').addEventListener('click', toggleHistory);
-            
-            overlay.addEventListener('click', () => { historyPanel.classList.remove('open'); settingsModal.classList.remove('active'); shareModal.classList.remove('active'); overlay.classList.remove('active'); });
+            const historySearch = document.getElementById('historySearch');
+            const expandBtn = document.getElementById('expandHistoryBtn');
 
-            function renderHistory() {
-                const list = document.getElementById('historyList'); let projects = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-                list.innerHTML = projects.length ? '' : '<li style="text-align:center; padding: 20px; color: #6b7280;">ফাইল নেই</li>';
-                projects.forEach(p => {
+            function toggleHistory() { 
+                if(!historyPanel.classList.contains('open')) { historySearch.value = ''; renderHistory(); }
+                historyPanel.classList.toggle('open'); overlay.classList.toggle('active'); 
+            }
+            document.getElementById('historyBtn').addEventListener('click', toggleHistory); 
+            
+            expandBtn.addEventListener('click', () => {
+                historyPanel.classList.toggle('fullscreen');
+                expandBtn.innerHTML = historyPanel.classList.contains('fullscreen') ? '<i class="fas fa-compress"></i>' : '<i class="fas fa-expand"></i>';
+            });
+
+            historySearch.addEventListener('input', (e) => renderHistory(e.target.value));
+
+            function renderHistory(searchQuery = '') {
+                const list = document.getElementById('historyList'); 
+                const projects = getProjects();
+                document.getElementById('totalProjectsCount').innerText = projects.length;
+
+                list.innerHTML = '';
+                if (projects.length === 0) { list.innerHTML = '<li style="text-align:center; padding: 20px; color: #6b7280;">ফাইল নেই</li>'; return; }
+
+                const filtered = projects.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+                if(filtered.length === 0) { list.innerHTML = '<li style="text-align:center; padding: 20px; color: #6b7280;">কিছু পাওয়া যায়নি</li>'; return; }
+
+                filtered.forEach(p => {
                     const li = document.createElement('li'); li.className = 'history-item';
-                    li.innerHTML = `<div class="h-info"><h4>${p.name}</h4><p>${new Date(p.date).toLocaleString('bn-BD')}</p></div><button class="h-delete"><i class="fas fa-trash"></i></button>`;
+                    const absoluteIndex = projects.findIndex(proj => proj.id === p.id);
+                    const projectNum = projects.length - absoluteIndex; 
+
+                    li.innerHTML = `
+                        <div class="h-info">
+                            <div class="project-number">Project: ${projectNum}</div>
+                            <h4>${p.name}</h4>
+                            <p><i class="far fa-clock"></i> ${new Date(p.date).toLocaleString('bn-BD', { hour: '2-digit', minute:'2-digit', day:'numeric', month:'short' })}</p>
+                        </div>
+                        <button class="h-delete"><i class="fas fa-trash"></i></button>
+                    `;
                     li.addEventListener('click', (e) => {
                         if(e.target.closest('.h-delete')) return; currentProjectId = p.id; projectNameInput.value = p.name;
-                        cmHtml.setValue(p.html); cmCss.setValue(p.css); cmJs.setValue(p.js); tabs[0].click(); toggleHistory(); showToast('লোড হয়েছে');
+                        cmHtml.setValue(p.html); cmCss.setValue(p.css); cmJs.setValue(p.js); tabs[0].click(); closeAllPanels(); showToast('লোড হয়েছে');
                     });
                     li.querySelector('.h-delete').addEventListener('click', (e) => {
                         e.stopPropagation(); if(confirm("ডিলিট করবেন?")) {
-                            projects = projects.filter(item => item.id !== p.id); localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
-                            if(currentProjectId === p.id) document.getElementById('newBtn').click(); renderHistory(); showToast('ডিলিট হয়েছে', 'error');
+                            const newProjects = projects.filter(item => item.id !== p.id); localStorage.setItem(STORAGE_KEY, JSON.stringify(newProjects));
+                            if(currentProjectId === p.id) document.getElementById('newBtn').click(); renderHistory(historySearch.value); showToast('ডিলিট হয়েছে', 'error');
                         }
                     }); list.appendChild(li);
                 });
             }
 
-            // --- Initial Load Logic ---
+            // --- Initial Load ---
             const urlParams = new URLSearchParams(window.location.search);
             const sharedCode = urlParams.get('code');
             const customTitle = urlParams.get('title');
@@ -593,11 +591,9 @@
                     const decompressed = LZString.decompressFromEncodedURIComponent(sharedCode);
                     const parsedData = JSON.parse(decompressed);
                     cmHtml.setValue(parsedData.h || ''); cmCss.setValue(parsedData.c || ''); cmJs.setValue(parsedData.j || '');
-                    
-                    if (customTitle) projectNameInput.value = customTitle; // Set project name from URL title
-
-                    showToast('শেয়ার করা কোড এডিটরে লোড হয়েছে!');
-                    window.history.replaceState({}, document.title, window.location.pathname); // clear URL so it doesn't stay there
+                    if (customTitle) projectNameInput.value = customTitle;
+                    showToast('শেয়ার করা কোড লোড হয়েছে!');
+                    window.history.replaceState({}, document.title, window.location.pathname);
                     setTimeout(() => { document.getElementById('previewTabBtn').click(); }, 300);
                 } catch (e) { showToast('লিংকটি কাজ করছে না!', 'error'); setInitialCode(); }
             } else {
@@ -615,4 +611,4 @@
         });
     </script>
 </body>
-</html>
+    </html>
