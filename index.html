@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AethelIDE Supreme🍀</title>
+    <title>AethelIDE Supreme - Live Hosting Edition</title>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600&display=swap" rel="stylesheet">
@@ -14,13 +14,12 @@
     <!-- CodeMirror Core -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
     
-    <!-- Dependencies for Download and Share -->
+    <!-- Dependencies for Download and Share (LZ-String for link compression) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
     
     <style>
         :root {
-            /* Premium Light & Vibrant Colors */
             --bg-body: #f3f4f6;
             --bg-panel: #ffffff;
             --bg-header: rgba(255, 255, 255, 0.95);
@@ -51,74 +50,36 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: var(--font-main);
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            height: 100dvh; 
-            overflow: hidden;
-            -webkit-font-smoothing: antialiased;
+            font-family: var(--font-main); background-color: var(--bg-body); color: var(--text-main);
+            display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; -webkit-font-smoothing: antialiased;
         }
 
-        /* --- Custom Scrollbar --- */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* --- Header / Navbar --- */
+        /* --- Header --- */
         .app-header {
-            background: var(--bg-header);
-            backdrop-filter: blur(8px);
-            padding: 10px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            box-shadow: var(--shadow-sm);
-            z-index: 100;
+            background: var(--bg-header); backdrop-filter: blur(8px); padding: 10px 16px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border-color); box-shadow: var(--shadow-sm); z-index: 100;
         }
 
         .logo {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            letter-spacing: -0.5px;
-            flex-shrink: 0;
+            font-size: 1.3rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; letter-spacing: -0.5px; flex-shrink: 0;
         }
         .logo i { color: var(--primary-blue); font-size: 1.4rem; }
 
-        .controls { 
-            display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; 
-            /* Smooth scrolling on mobile */
-            overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none;
-        }
+        .controls { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
         .controls::-webkit-scrollbar { display: none; }
 
         .input-group { position: relative; flex-shrink: 0; }
-        .input-group input {
-            background: #f8fafc; border: 1px solid var(--border-color);
-            color: var(--text-main); padding: 8px 10px 8px 32px;
-            border-radius: var(--radius-md); font-family: var(--font-main);
-            font-size: 0.85rem; outline: none; transition: var(--transition);
-            width: 150px;
-        }
+        .input-group input { background: #f8fafc; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 10px 8px 32px; border-radius: var(--radius-md); font-family: var(--font-main); font-size: 0.85rem; outline: none; transition: var(--transition); width: 150px; }
         .input-group i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem; }
         .input-group input:focus { border-color: var(--primary-blue); background: #fff; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
 
-        /* --- Premium Buttons --- */
-        .btn {
-            padding: 8px 12px; border: none; border-radius: var(--radius-md);
-            font-family: var(--font-main); font-size: 0.85rem; font-weight: 500;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
-            transition: var(--transition); background: #fff; color: var(--text-main);
-            border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); flex-shrink: 0;
-        }
+        .btn { padding: 8px 12px; border: none; border-radius: var(--radius-md); font-family: var(--font-main); font-size: 0.85rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: var(--transition); background: #fff; color: var(--text-main); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); flex-shrink: 0; }
         .btn:hover { background: #f8fafc; transform: translateY(-1px); }
         .btn:active { transform: translateY(0); }
         
@@ -131,82 +92,50 @@
         .btn-download { color: var(--accent-purple); border-color: #ddd6fe; background: #f5f3ff; }
         .btn-download:hover { background: #ede9fe; }
 
-        /* --- Main Content Area --- */
+        /* --- Main Content --- */
         .main-wrapper { display: flex; flex-direction: column; flex-grow: 1; padding: 10px; overflow: hidden; }
 
-        .editor-container {
-            background: var(--bg-panel); border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color); display: flex; flex-direction: column; flex-grow: 1; overflow: hidden;
-            box-shadow: var(--shadow-md);
-        }
+        .editor-container { background: var(--bg-panel); border-radius: var(--radius-lg); border: 1px solid var(--border-color); display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; box-shadow: var(--shadow-md); }
 
         /* --- Tabs --- */
         .tabs-header { display: flex; background: #f8fafc; border-bottom: 1px solid var(--border-color); }
-        .tab-btn {
-            flex: 1; padding: 12px 8px; background: transparent; border: none;
-            font-family: var(--font-main); font-weight: 600; font-size: 0.9rem; color: var(--text-muted);
-            cursor: pointer; transition: var(--transition); display: flex; justify-content: center; align-items: center; gap: 6px;
-            border-bottom: 2px solid transparent;
-        }
+        .tab-btn { flex: 1; padding: 12px 8px; background: transparent; border: none; font-family: var(--font-main); font-weight: 600; font-size: 0.9rem; color: var(--text-muted); cursor: pointer; transition: var(--transition); display: flex; justify-content: center; align-items: center; gap: 6px; border-bottom: 2px solid transparent; }
         .tab-btn:hover { color: var(--primary-blue); background: #f1f5f9; }
         .tab-btn.active { color: var(--primary-blue); border-bottom-color: var(--primary-blue); background: var(--bg-panel); }
-        
-        .tab-btn[data-target="html"] i { color: #e34c26; }
-        .tab-btn[data-target="css"] i { color: #264de4; }
-        .tab-btn[data-target="js"] i { color: #f0db4f; }
-        .tab-btn[data-target="preview"] i { color: var(--success-green); }
+        .tab-btn[data-target="html"] i { color: #e34c26; } .tab-btn[data-target="css"] i { color: #264de4; } .tab-btn[data-target="js"] i { color: #f0db4f; } .tab-btn[data-target="preview"] i { color: var(--success-green); }
 
         /* --- Editor Toolbar --- */
-        .editor-toolbar {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 6px 12px; background: #fff; border-bottom: 1px solid #f1f5f9;
-        }
+        .editor-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; background: #fff; border-bottom: 1px solid #f1f5f9; }
         .file-badge { font-family: var(--font-code); font-size: 0.75rem; color: var(--text-muted); background: #f1f5f9; padding: 3px 8px; border-radius: 4px; }
         .action-group { display: flex; gap: 8px; }
-        .action-btn {
-            background: #fff; border: 1px solid var(--border-color); color: var(--text-muted); padding: 5px 10px; border-radius: 6px;
-            cursor: pointer; font-size: 0.75rem; font-weight: 500; transition: var(--transition); display: flex; align-items: center; gap: 5px; box-shadow: var(--shadow-sm);
-        }
+        .action-btn { background: #fff; border: 1px solid var(--border-color); color: var(--text-muted); padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 500; transition: var(--transition); display: flex; align-items: center; gap: 5px; box-shadow: var(--shadow-sm); }
         .action-btn:hover { background: #f8fafc; color: var(--primary-blue); border-color: var(--primary-blue); }
         .action-btn.clear-btn:hover { color: var(--danger-red); border-color: var(--danger-red); }
 
-        /* --- Tab Content --- */
+        /* --- Content & CodeMirror --- */
         .tab-content { display: none; flex-grow: 1; flex-direction: column; height: 100%; position: relative; }
         .tab-content.active { display: flex; animation: fadeIn 0.2s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- CodeMirror --- */
         .CodeMirror { height: 100%; width: 100%; font-family: var(--font-code); font-size: 13.5px; line-height: 1.4; background: #fff; color: #1e293b; }
         .CodeMirror-gutters { background: #f8fafc; border-right: 1px solid var(--border-color); padding-right: 5px; }
         .CodeMirror-linenumber { color: #cbd5e1; font-size: 12px; }
         .CodeMirror-cursor { border-left: 2px solid var(--primary-blue); }
         .CodeMirror-selected { background: #e0f2fe !important; }
         
-        .cm-s-default .cm-tag { color: #e11d48; font-weight: 500; }
-        .cm-s-default .cm-attribute { color: #0284c7; }
-        .cm-s-default .cm-string { color: #16a34a; }
-        .cm-s-default .cm-keyword { color: #7e22ce; font-weight: 600; }
-        .cm-s-default .cm-def { color: #ea580c; }
-        .cm-s-default .cm-comment { color: #94a3b8; font-style: italic; }
-        .cm-s-default .cm-number { color: #059669; }
-        .cm-s-default .cm-property { color: #0f766e; }
-        .cm-s-default .cm-qualifier { color: #c026d3; }
+        .cm-s-default .cm-tag { color: #e11d48; font-weight: 500; } .cm-s-default .cm-attribute { color: #0284c7; } .cm-s-default .cm-string { color: #16a34a; } .cm-s-default .cm-keyword { color: #7e22ce; font-weight: 600; } .cm-s-default .cm-def { color: #ea580c; } .cm-s-default .cm-comment { color: #94a3b8; font-style: italic; } .cm-s-default .cm-number { color: #059669; }
 
         /* --- Preview Iframe --- */
         #previewFrame { width: 100%; height: 100%; border: none; background: #fff; flex-grow: 1; }
         .preview-toolbar { padding: 8px 12px; background: #f8fafc; display: flex; justify-content: flex-end; gap: 8px; border-bottom: 1px solid var(--border-color); }
 
         /* --- Footer --- */
-        .footer {
-            padding: 8px 16px; display: flex; justify-content: space-between; align-items: center;
-            font-size: 0.75rem; color: var(--text-muted); flex-shrink: 0;
-            background: var(--bg-panel); border-top: 1px solid var(--border-color);
-        }
+        .footer { padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-muted); flex-shrink: 0; background: var(--bg-panel); border-top: 1px solid var(--border-color); }
         .status-badge { display: flex; align-items: center; gap: 5px; background: #f1f5f9; padding: 3px 8px; border-radius: 20px; font-weight: 500;}
         .status-dot { width: 8px; height: 8px; border-radius: 50%; background-color: var(--success-green); }
 
-        /* --- Sidebar & Settings Modal & Toast CSS --- */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); backdrop-filter: blur(2px); z-index: 999; display: none; opacity: 0; transition: 0.3s; }
+        /* --- Overlays & Modals --- */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(3px); z-index: 999; display: none; opacity: 0; transition: 0.3s; }
         .overlay.active { display: block; opacity: 1; }
         
         .side-panel { position: fixed; top: 0; right: -320px; width: 100%; max-width: 300px; height: 100%; background: #fff; box-shadow: -5px 0 20px rgba(0,0,0,0.1); z-index: 1000; display: flex; flex-direction: column; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -222,56 +151,69 @@
         .h-delete { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--danger-red); background: #fee2e2; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; opacity: 0; transition: 0.2s; display: flex; justify-content: center; align-items: center;}
         .history-item:hover .h-delete { opacity: 1; }
 
-        /* Settings Modal */
-        .settings-modal {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
-            background: #fff; width: 90%; max-width: 400px; border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg); z-index: 1001; display: none; opacity: 0; transition: all 0.3s ease;
-            flex-direction: column;
-        }
-        .settings-modal.active { display: flex; opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        .settings-body { padding: 20px; }
-        .settings-body h3 { margin-bottom: 15px; color: var(--text-main); font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
-        .setting-option {
-            display: flex; align-items: center; padding: 12px; border: 1px solid var(--border-color);
-            border-radius: var(--radius-md); margin-bottom: 10px; cursor: pointer; transition: var(--transition);
-        }
+        /* General Modal Style (For Settings & Share) */
+        .custom-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: #fff; width: 90%; max-width: 420px; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); z-index: 1001; display: none; opacity: 0; transition: all 0.3s ease; flex-direction: column; }
+        .custom-modal.active { display: flex; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        .modal-body { padding: 20px; }
+        .modal-body h3 { margin-bottom: 15px; color: var(--text-main); font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .setting-option { display: flex; align-items: center; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 10px; cursor: pointer; transition: var(--transition); }
         .setting-option:hover { background: #f8fafc; border-color: var(--primary-blue); }
         .setting-option input[type="radio"] { margin-right: 12px; accent-color: var(--primary-blue); transform: scale(1.2); }
         .setting-option div { display: flex; flex-direction: column; }
         .setting-option strong { font-size: 0.9rem; color: var(--text-main); }
-        .setting-option span { font-size: 0.75rem; color: var(--text-muted); }
-        .settings-footer { padding: 12px 20px; background: #f8fafc; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; border-bottom-left-radius: var(--radius-lg); border-bottom-right-radius: var(--radius-lg); }
-        
+        .setting-option span { font-size: 0.75rem; color: var(--text-muted); line-height: 1.3; margin-top: 3px;}
+        .modal-footer { padding: 12px 20px; background: #f8fafc; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 10px; border-bottom-left-radius: var(--radius-lg); border-bottom-right-radius: var(--radius-lg); }
+
         #toast-container { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none;}
         .toast { background: #1e293b; color: white; padding: 10px 20px; border-radius: 30px; font-size: 0.85rem; font-weight: 500; box-shadow: 0 10px 20px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; opacity: 0; transform: translateY(20px); transition: all 0.3s ease; }
         .toast.show { opacity: 1; transform: translateY(0); }
         .toast.success i { color: var(--success-green); }
         .toast.error i { color: var(--danger-red); }
 
-        /* --- Mobile Responsiveness --- */
+        /* --- Mobile --- */
         @media (max-width: 768px) {
             .app-header { flex-wrap: wrap; padding: 10px; gap: 8px; }
             .logo { width: 100%; justify-content: center; font-size: 1.2rem; margin-bottom: 4px; }
             .controls { width: 100%; justify-content: flex-start; padding-bottom: 4px; }
             .input-group input { width: 110px; font-size: 0.8rem; padding: 6px 8px 6px 28px; }
-            .input-group i { left: 10px; font-size: 0.8rem; }
-            
-            .btn span { display: none; }
-            .btn { padding: 8px 14px; }
-            .btn i { margin: 0; font-size: 1.1rem; }
-            
-            .tab-btn { font-size: 0.8rem; padding: 10px 4px; }
-            .tab-btn span { display: none; }
-            .tab-btn i { font-size: 1.2rem; margin: 0; }
-            
-            .editor-toolbar { padding: 4px 8px; }
-            .action-btn { padding: 4px 8px; font-size: 0.7rem; }
-            .action-btn span { display: none; }
+            .btn span { display: none; } .btn { padding: 8px 14px; } .btn i { margin: 0; font-size: 1.1rem; }
+            .tab-btn { font-size: 0.8rem; padding: 10px 4px; } .tab-btn span { display: none; } .tab-btn i { font-size: 1.2rem; margin: 0; }
+            .editor-toolbar { padding: 4px 8px; } .action-btn { padding: 4px 8px; font-size: 0.7rem; } .action-btn span { display: none; }
         }
     </style>
 </head>
 <body>
+
+    <!-- This script executes FIRST. If it's a "Preview Only" link, it intercepts everything and loads just the website -->
+    <script>
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sharedCode = urlParams.get('code');
+            const shareMode = urlParams.get('mode');
+
+            if (sharedCode && shareMode === 'preview') {
+                try {
+                    // We must wait for LZString to be available. Since it's in <head>, it should be ready.
+                    if (window.LZString) {
+                        const decompressed = LZString.decompressFromEncodedURIComponent(sharedCode);
+                        const parsedData = JSON.parse(decompressed);
+                        
+                        // Replace entire document content with the user's generated website
+                        const htmlContent = `<!DOCTYPE html>\n<html lang="bn">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>AethelIDE Hosted App</title>\n<style>\n${parsedData.c || ''}\n</style>\n</head>\n<body>\n${parsedData.h || ''}\n<script>\n${parsedData.j || ''}\n<\/script>\n</body>\n</html>`;
+                        
+                        document.open("text/html", "replace");
+                        document.write(htmlContent);
+                        document.close();
+                        
+                        // Stop execution of the rest of the IDE scripts
+                        window.stop(); 
+                    }
+                } catch (e) {
+                    console.error("Failed to load preview:", e);
+                }
+            }
+        })();
+    </script>
 
     <header class="app-header">
         <div class="logo"><i class="fas fa-layer-group"></i> AethelIDE </div>
@@ -282,9 +224,8 @@
             </div>
             <button class="btn btn-new" id="newBtn" title="নতুন প্রজেক্ট"><i class="fas fa-plus"></i> <span>নতুন</span></button>
             <button class="btn btn-save" id="saveBtn" title="কোড সেভ"><i class="fas fa-save"></i> <span>সেভ</span></button>
-            <button class="btn btn-share" id="shareBtn" title="কোড শেয়ার করুন (লিংক)"><i class="fas fa-share-alt"></i> <span>শেয়ার</span></button>
+            <button class="btn btn-share" id="openShareModalBtn" title="কোড শেয়ার করুন (লিংক)"><i class="fas fa-share-alt"></i> <span>শেয়ার</span></button>
             <button class="btn btn-download" id="downloadBtn" title="ডাউনলোড করুন"><i class="fas fa-download"></i> <span>ডাউনলোড</span></button>
-            <!-- NEW SETTINGS BUTTON -->
             <button class="btn" id="settingsBtn" title="ডাউনলোড সেটিংস"><i class="fas fa-cog"></i> <span>সেটিংস</span></button>
             <button class="btn" id="historyBtn" title="ফাইলস" style="color: var(--text-main);"><i class="fas fa-folder-open"></i> <span>ফাইলস</span></button>
         </div>
@@ -343,16 +284,15 @@
     </main>
 
     <footer class="footer">
-        <div>AethelIDE Masterpiece</div>
+        <div>AethelIDE Live Host</div>
         <div class="status-badge" id="saveStatus">
             <div class="status-dot"></div> <span id="statusText">অটো-সেভড</span>
         </div>
     </footer>
 
-    <!-- OVERLAYS AND MODALS -->
+    <!-- Overlays & Modals -->
     <div class="overlay" id="overlay"></div>
     
-    <!-- History Sidebar -->
     <aside class="side-panel" id="historyPanel">
         <div class="panel-header">
             <h2><i class="fas fa-archive"></i> আপনার ফাইলস</h2>
@@ -362,28 +302,48 @@
     </aside>
 
     <!-- Settings Modal -->
-    <div class="settings-modal" id="settingsModal">
-        <div class="settings-body">
+    <div class="custom-modal" id="settingsModal">
+        <div class="modal-body">
             <h3><i class="fas fa-cog"></i> ডাউনলোড সেটিংস</h3>
-            
             <label class="setting-option">
                 <input type="radio" name="dl_format" value="zip">
-                <div>
-                    <strong>ZIP প্যাকেজ (প্রস্তাবিত)</strong>
-                    <span>HTML, CSS এবং JS আলাদা ফাইলে ডাউনলোড হবে।</span>
-                </div>
+                <div><strong>ZIP প্যাকেজ (প্রস্তাবিত)</strong><span>HTML, CSS এবং JS আলাদা ফাইলে ডাউনলোড হবে।</span></div>
             </label>
-            
             <label class="setting-option">
                 <input type="radio" name="dl_format" value="single">
-                <div>
-                    <strong>সিঙ্গেল HTML ফাইল</strong>
-                    <span>সমস্ত কোড একটিমাত্র HTML ফাইলে যুক্ত হয়ে ডাউনলোড হবে।</span>
-                </div>
+                <div><strong>সিঙ্গেল HTML ফাইল</strong><span>সমস্ত কোড একটিমাত্র ফাইলে যুক্ত হয়ে ডাউনলোড হবে।</span></div>
             </label>
         </div>
-        <div class="settings-footer">
+        <div class="modal-footer">
             <button class="btn btn-save" id="saveSettingsBtn">ওকে</button>
+        </div>
+    </div>
+
+    <!-- Share Settings Modal -->
+    <div class="custom-modal" id="shareModal">
+        <div class="modal-body">
+            <h3><i class="fas fa-share-alt"></i> শেয়ার লিংক তৈরি</h3>
+            <label class="setting-option">
+                <input type="radio" name="share_mode" value="preview" checked>
+                <div>
+                    <strong>শুধু প্রিভিউ (Website Mode)</strong>
+                    <span>লিংক খুললে সরাসরি ওয়েবসাইট দেখাবে। কোড এডিটর দেখা যাবে না। কাউকে শুধু ডিজাইন দেখাতে এটি ব্যবহার করুন।</span>
+                </div>
+            </label>
+            <label class="setting-option">
+                <input type="radio" name="share_mode" value="ide">
+                <div>
+                    <strong>কোড ও প্রিভিউ (IDE Mode)</strong>
+                    <span>এডিটর সহ ওপেন হবে, যাতে অন্যরাও আপনার কোড দেখতে ও এডিট করতে পারে।</span>
+                </div>
+            </label>
+            <div style="margin-top: 15px;">
+                <input type="text" id="shareLinkOutput" readonly style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.8rem; background: #f8fafc; color: var(--primary-blue);" placeholder="লিংক তৈরি হচ্ছে...">
+            </div>
+        </div>
+        <div class="modal-footer" style="justify-content: space-between;">
+            <button class="btn" id="closeShareModalBtn">বাতিল</button>
+            <button class="btn btn-share" id="copyShareLinkBtn"><i class="fas fa-copy"></i> কপি করুন</button>
         </div>
     </div>
 
@@ -397,53 +357,19 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const STORAGE_KEY = 'aethel_master_v11';
-            const AUTOSAVE_KEY = 'aethel_autosave_v11';
+            // If the document was replaced by the Preview script at the top, DO NOT run IDE initialization.
+            if (document.title === "AethelIDE - Shared Preview") return;
+
+            const STORAGE_KEY = 'aethel_final_v12';
+            const AUTOSAVE_KEY = 'aethel_autosave_v12';
             const VISIT_LOG_KEY = 'aethel_visit_counter';
-            const DL_PREF_KEY = 'aethel_download_pref'; // New local storage key for settings
+            const DL_PREF_KEY = 'aethel_download_pref';
             let currentProjectId = null;
 
-            // --- 1. Settings Logic ---
+            // --- UI Setup & Global Functions ---
             const overlay = document.getElementById('overlay');
-            const settingsModal = document.getElementById('settingsModal');
-            const dlRadios = document.getElementsByName('dl_format');
+            const projectNameInput = document.getElementById('projectName');
             
-            // Load saved preference
-            let dlFormat = localStorage.getItem(DL_PREF_KEY) || 'zip';
-            dlRadios.forEach(radio => { if(radio.value === dlFormat) radio.checked = true; });
-
-            // Open Settings
-            document.getElementById('settingsBtn').addEventListener('click', () => {
-                overlay.classList.add('active');
-                settingsModal.classList.add('active');
-            });
-
-            // Close Settings and Save Preference
-            document.getElementById('saveSettingsBtn').addEventListener('click', () => {
-                let selectedValue;
-                for(const radio of dlRadios) {
-                    if (radio.checked) { selectedValue = radio.value; break; }
-                }
-                localStorage.setItem(DL_PREF_KEY, selectedValue);
-                dlFormat = selectedValue;
-                
-                settingsModal.classList.remove('active');
-                overlay.classList.remove('active');
-                showToast('সেটিংস সেভ হয়েছে!');
-            });
-
-            // --- 2. Visit Counter ---
-            function checkVisitCount() {
-                let visitData = JSON.parse(localStorage.getItem(VISIT_LOG_KEY));
-                const now = Date.now();
-                if (!visitData || (now - visitData.firstVisit > 30*24*60*60*1000)) {
-                    visitData = { count: 1, firstVisit: now };
-                } else { visitData.count += 1; }
-                localStorage.setItem(VISIT_LOG_KEY, JSON.stringify(visitData));
-                return visitData.count;
-            }
-            const totalVisits = checkVisitCount();
-
             function showToast(message, type = 'success') {
                 const container = document.getElementById('toast-container');
                 const toast = document.createElement('div');
@@ -455,27 +381,76 @@
                 setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2500);
             }
 
-            // --- 3. CodeMirror & Tabs (Fixed jump) ---
+            // --- Download Settings Logic ---
+            const settingsModal = document.getElementById('settingsModal');
+            const dlRadios = document.getElementsByName('dl_format');
+            let dlFormat = localStorage.getItem(DL_PREF_KEY) || 'zip';
+            dlRadios.forEach(radio => { if(radio.value === dlFormat) radio.checked = true; });
+
+            document.getElementById('settingsBtn').addEventListener('click', () => { overlay.classList.add('active'); settingsModal.classList.add('active'); });
+            document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+                for(const radio of dlRadios) { if (radio.checked) { dlFormat = radio.value; break; } }
+                localStorage.setItem(DL_PREF_KEY, dlFormat);
+                settingsModal.classList.remove('active'); overlay.classList.remove('active'); showToast('সেটিংস সেভ হয়েছে!');
+            });
+
+            // --- Advanced Share Settings Logic ---
+            const shareModal = document.getElementById('shareModal');
+            const shareModeRadios = document.getElementsByName('share_mode');
+            const shareLinkOutput = document.getElementById('shareLinkOutput');
+            let generatedShareLink = '';
+
+            function generateLink() {
+                const codeData = { h: cmHtml.getValue(), c: cmCss.getValue(), j: cmJs.getValue() };
+                const compressedString = LZString.compressToEncodedURIComponent(JSON.stringify(codeData));
+                const baseUrl = window.location.href.split('?')[0];
+                
+                let selectedMode = 'preview';
+                for(const radio of shareModeRadios) { if (radio.checked) { selectedMode = radio.value; break; } }
+                
+                if (selectedMode === 'preview') {
+                    generatedShareLink = `${baseUrl}?mode=preview&code=${compressedString}`;
+                } else {
+                    generatedShareLink = `${baseUrl}?code=${compressedString}`;
+                }
+                shareLinkOutput.value = generatedShareLink;
+            }
+
+            document.getElementById('openShareModalBtn').addEventListener('click', () => {
+                generateLink(); overlay.classList.add('active'); shareModal.classList.add('active');
+            });
+
+            shareModeRadios.forEach(radio => radio.addEventListener('change', generateLink));
+
+            document.getElementById('copyShareLinkBtn').addEventListener('click', () => {
+                if (generatedShareLink.length > 5000) showToast('লিংক অনেক বড়, কাজ নাও করতে পারে!', 'error');
+                navigator.clipboard.writeText(generatedShareLink).then(() => {
+                    showToast('লিংক কপি হয়েছে! এটি সেন্ড করুন।');
+                    shareModal.classList.remove('active'); overlay.classList.remove('active');
+                }).catch(() => showToast('লিংক কপি করতে সমস্যা হয়েছে।', 'error'));
+            });
+
+            document.getElementById('closeShareModalBtn').addEventListener('click', () => { shareModal.classList.remove('active'); overlay.classList.remove('active'); });
+
+            // --- IDE Core (CodeMirror, Tabs, AutoSave) ---
             const cmOptions = { theme: 'default', lineNumbers: true, lineWrapping: false, indentUnit: 4, tabSize: 4 };
             const cmHtml = CodeMirror.fromTextArea(document.getElementById('htmlEditor'), { ...cmOptions, mode: 'htmlmixed' });
             const cmCss = CodeMirror.fromTextArea(document.getElementById('cssEditor'), { ...cmOptions, mode: 'css' });
             const cmJs = CodeMirror.fromTextArea(document.getElementById('jsEditor'), { ...cmOptions, mode: 'javascript' });
             const editors = { html: cmHtml, css: cmCss, js: cmJs };
 
-            const tabs = document.querySelectorAll('.tab-btn');
-            const contents = document.querySelectorAll('.tab-content');
+            const tabs = document.querySelectorAll('.tab-btn'); const contents = document.querySelectorAll('.tab-content');
             tabs.forEach(tab => {
                 tab.addEventListener('click', () => {
                     tabs.forEach(t => t.classList.remove('active')); contents.forEach(c => c.classList.remove('active'));
                     tab.classList.add('active'); const target = tab.getAttribute('data-target');
                     document.getElementById(`${target}-content`).classList.add('active');
-                    if (editors[target]) { setTimeout(() => editors[target].refresh(), 10); } // No .focus() jump
+                    if (editors[target]) { setTimeout(() => editors[target].refresh(), 10); }
                     if (target === 'preview') updatePreview();
                 });
             });
 
-            // --- 4. AutoSave ---
-            const statusText = document.getElementById('statusText'), statusDot = document.querySelector('.status-dot'), projectNameInput = document.getElementById('projectName');
+            const statusText = document.getElementById('statusText'), statusDot = document.querySelector('.status-dot');
             let autoSaveTimeout;
             function triggerAutoSave() {
                 statusText.textContent = "টাইপিং..."; statusDot.style.backgroundColor = "var(--warning-yellow)";
@@ -489,16 +464,22 @@
             projectNameInput.addEventListener('input', triggerAutoSave);
 
             function setInitialCode() {
-                if (totalVisits <= 10) {
-                    cmHtml.setValue(`<div class="box">\n  <h1>✨ Supreme Masterpiece</h1>\n  <p>আপনার কোড লিখতে শুরু করুন।</p>\n</div>`);
+                let visitData = JSON.parse(localStorage.getItem(VISIT_LOG_KEY));
+                const now = Date.now();
+                if (!visitData || (now - visitData.firstVisit > 30*24*60*60*1000)) visitData = { count: 1, firstVisit: now };
+                else visitData.count += 1;
+                localStorage.setItem(VISIT_LOG_KEY, JSON.stringify(visitData));
+
+                if (visitData.count <= 10) {
+                    cmHtml.setValue(`<div class="box">\n  <h1>✨ Ultimate Web Host</h1>\n  <p>আপনার ডিজাইন শুরু করুন।</p>\n</div>`);
                     cmCss.setValue(`body {\n  margin: 0;\n  height: 100vh;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  background: #f1f5f9;\n  font-family: sans-serif;\n}\n\n.box {\n  background: #fff;\n  padding: 30px;\n  border-radius: 12px;\n  box-shadow: 0 4px 15px rgba(0,0,0,0.1);\n  text-align: center;\n  color: #333;\n}`);
-                    cmJs.setValue(`console.log("Welcome to AethelIDE Final Edition!");`);
+                    cmJs.setValue(`console.log("Ready to build and share!");`);
                 } else {
                     cmHtml.setValue(''); cmCss.setValue(''); cmJs.setValue('');
                 }
             }
 
-            // --- 5. Action Buttons (New, Share, Download) ---
+            // --- Action Buttons (New, Download) ---
             document.getElementById('newBtn').addEventListener('click', () => {
                 if(confirm("নতুন প্রজেক্ট তৈরি করবেন? বর্তমান কোড মুছে যাবে।")) {
                     currentProjectId = null; projectNameInput.value = ''; localStorage.removeItem(AUTOSAVE_KEY);
@@ -506,61 +487,43 @@
                 }
             });
 
-            document.getElementById('shareBtn').addEventListener('click', () => {
-                const codeData = { h: cmHtml.getValue(), c: cmCss.getValue(), j: cmJs.getValue() };
-                const compressedString = LZString.compressToEncodedURIComponent(JSON.stringify(codeData));
-                const shareableLink = `${window.location.href.split('?')[0]}?code=${compressedString}`;
-                if (shareableLink.length > 5000) showToast('কোড অনেক বড়, লিংকটি কাজ নাও করতে পারে!', 'error');
-                navigator.clipboard.writeText(shareableLink).then(() => showToast('লিংক কপি হয়েছে! এটি যে কাউকে পাঠাতে পারবেন।')).catch(() => showToast('লিংক কপি করতে সমস্যা হয়েছে।', 'error'));
-            });
-
-            // UPDATED DOWNLOAD LOGIC BASED ON SETTINGS
             document.getElementById('downloadBtn').addEventListener('click', async () => {
                 const title = projectNameInput.value.trim() || 'Aethel_Project';
                 const safeTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
                 showToast('ফাইল তৈরি হচ্ছে...');
 
                 if (dlFormat === 'zip') {
-                    // Download as ZIP (Separate files)
                     const zip = new JSZip();
                     zip.file("index.html", `<!DOCTYPE html>\n<html lang="bn">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>${title}</title>\n<link rel="stylesheet" href="style.css">\n</head>\n<body>\n${cmHtml.getValue()}\n<script src="script.js"><\/script>\n</body>\n</html>`);
-                    zip.file("style.css", cmCss.getValue());
-                    zip.file("script.js", cmJs.getValue());
-                    
+                    zip.file("style.css", cmCss.getValue()); zip.file("script.js", cmJs.getValue());
                     const content = await zip.generateAsync({type: "blob"});
                     downloadBlob(content, `${safeTitle}.zip`);
                 } else {
-                    // Download as Single HTML
                     const content = `<!DOCTYPE html>\n<html lang="bn">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>${title}</title>\n<style>\n${cmCss.getValue()}\n</style>\n</head>\n<body>\n${cmHtml.getValue()}\n<script>\n${cmJs.getValue()}\n<\/script>\n</body>\n</html>`;
-                    const blob = new Blob([content], { type: 'text/html' });
-                    downloadBlob(blob, `${safeTitle}.html`);
+                    downloadBlob(new Blob([content], { type: 'text/html' }), `${safeTitle}.html`);
                 }
                 showToast('ডাউনলোড সফল হয়েছে!');
             });
 
             function downloadBlob(blob, filename) {
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = filename;
-                link.click();
-                URL.revokeObjectURL(link.href);
+                const link = document.createElement('a'); link.href = URL.createObjectURL(blob);
+                link.download = filename; link.click(); URL.revokeObjectURL(link.href);
             }
 
-            // --- 6. Preview Logic ---
+            // --- Preview ---
             function getPreviewContent() { return `<!DOCTYPE html><html lang="bn"><head><style>${cmCss.getValue()}</style></head><body>${cmHtml.getValue()}<script>${cmJs.getValue()}<\/script></body></html>`; }
             function updatePreview() {
-                const iframe = document.getElementById('previewFrame'); const content = getPreviewContent();
-                const blob = new Blob([content], { type: 'text/html' }); const url = URL.createObjectURL(blob);
-                iframe.src = url; iframe.onload = () => URL.revokeObjectURL(url);
+                const iframe = document.getElementById('previewFrame'); const blob = new Blob([getPreviewContent()], { type: 'text/html' });
+                const url = URL.createObjectURL(blob); iframe.src = url; iframe.onload = () => URL.revokeObjectURL(url);
             }
             document.getElementById('refreshPreviewBtn').addEventListener('click', () => { updatePreview(); showToast('রিলোড সম্পন্ন'); });
-            document.getElementById('openNewTabBtn').addEventListener('click', () => { const content = getPreviewContent(); const blob = new Blob([content], { type: 'text/html' }); window.open(URL.createObjectURL(blob), '_blank'); });
+            document.getElementById('openNewTabBtn').addEventListener('click', () => { window.open(URL.createObjectURL(new Blob([getPreviewContent()], { type: 'text/html' })), '_blank'); });
 
             // Copy & Clear
             document.querySelectorAll('.copy-btn').forEach(btn => { btn.addEventListener('click', () => { navigator.clipboard.writeText(editors[btn.getAttribute('data-type')].getValue()); showToast('কোড কপি হয়েছে!'); }); });
             document.querySelectorAll('.clear-btn').forEach(btn => { btn.addEventListener('click', () => { if(confirm("সব কোড মুছবেন?")) { editors[btn.getAttribute('data-type')].setValue(''); showToast('কোড মোছা হয়েছে', 'error'); } }); });
 
-            // --- 7. Saving & History ---
+            // --- History ---
             function saveProject() {
                 let name = projectNameInput.value.trim() || `প্রজেক্ট ${new Date().toLocaleTimeString('bn-BD')}`; projectNameInput.value = name;
                 const project = { id: currentProjectId || 'id_'+Date.now(), name, html: cmHtml.getValue(), css: cmCss.getValue(), js: cmJs.getValue(), date: new Date().toISOString() };
@@ -574,12 +537,7 @@
             function toggleHistory() { if(!historyPanel.classList.contains('open')) renderHistory(); historyPanel.classList.toggle('open'); overlay.classList.toggle('active'); }
             document.getElementById('historyBtn').addEventListener('click', toggleHistory); document.getElementById('closeHistoryBtn').addEventListener('click', toggleHistory);
             
-            // Close overlays clicking outside
-            overlay.addEventListener('click', () => {
-                historyPanel.classList.remove('open');
-                settingsModal.classList.remove('active');
-                overlay.classList.remove('active');
-            });
+            overlay.addEventListener('click', () => { historyPanel.classList.remove('open'); settingsModal.classList.remove('active'); shareModal.classList.remove('active'); overlay.classList.remove('active'); });
 
             function renderHistory() {
                 const list = document.getElementById('historyList'); let projects = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
@@ -600,20 +558,21 @@
                 });
             }
 
-            // --- 8. Load App & Process Shared URL ---
+            // --- Initial Load Logic ---
             const urlParams = new URLSearchParams(window.location.search);
             const sharedCode = urlParams.get('code');
+            const shareMode = urlParams.get('mode');
 
-            if (sharedCode) {
+            if (sharedCode && shareMode !== 'preview') {
                 try {
                     const decompressed = LZString.decompressFromEncodedURIComponent(sharedCode);
                     const parsedData = JSON.parse(decompressed);
                     cmHtml.setValue(parsedData.h || ''); cmCss.setValue(parsedData.c || ''); cmJs.setValue(parsedData.j || '');
-                    showToast('শেয়ার করা কোড লোড হয়েছে!');
-                    window.history.replaceState({}, document.title, window.location.pathname); // clear URL
+                    showToast('শেয়ার করা কোড এডিটরে লোড হয়েছে!');
+                    window.history.replaceState({}, document.title, window.location.pathname);
                     setTimeout(() => { document.getElementById('previewTabBtn').click(); }, 300);
                 } catch (e) { showToast('লিংকটি কাজ করছে না!', 'error'); setInitialCode(); }
-            } else {
+            } else if (!sharedCode) {
                 const autosaveData = localStorage.getItem(AUTOSAVE_KEY);
                 if (autosaveData) {
                     try {
@@ -624,12 +583,7 @@
             }
             
             setTimeout(() => { cmHtml.refresh(); cmCss.refresh(); cmJs.refresh(); }, 200);
-
-            // Shortcuts
-            document.addEventListener('keydown', (e) => { 
-                if((e.ctrlKey||e.metaKey) && e.key === 's') { e.preventDefault(); saveProject(); }
-                if((e.ctrlKey||e.metaKey) && e.key === 'Enter') { e.preventDefault(); document.getElementById('previewTabBtn').click(); }
-            });
+            document.addEventListener('keydown', (e) => { if((e.ctrlKey||e.metaKey) && e.key === 's') { e.preventDefault(); saveProject(); } if((e.ctrlKey||e.metaKey) && e.key === 'Enter') { e.preventDefault(); document.getElementById('previewTabBtn').click(); }});
         });
     </script>
 </body>
